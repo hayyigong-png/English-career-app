@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5B54F0"/>
+      <stop offset="100%" stop-color="#2D27A3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Full bleed background -->
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <ellipse cx="256" cy="80" rx="200" ry="100" fill="rgba(255,255,255,0.07)"/>
+
+  <!-- Content inside safe zone (center 80% = x:51-461, y:51-461) -->
+  <rect x="82" y="110" width="348" height="222" rx="50" fill="white"/>
+  <path d="M 114 332 C 114 332 90 390 74 414 C 102 398 162 364 182 332 Z" fill="white"/>
+
+  <text
+    x="256" y="252"
+    font-family="'Arial Black','Helvetica Neue',Arial,sans-serif"
+    font-size="118" font-weight="900"
+    fill="#3730A3"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    letter-spacing="-2">EN</text>
+
+  <rect x="158" y="280" width="196" height="10" rx="5" fill="#4F46E5" opacity="0.35"/>
+</svg>

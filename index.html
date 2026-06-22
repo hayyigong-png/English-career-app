@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#4F46E5">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>English for Career Malaysia</title>
+<link rel="manifest" href="./manifest.json">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --p:#4F46E5;--pd:#3730A3;--pl:#EEF2FF;
+  --ok:#10B981;--warn:#F59E0B;--err:#EF4444;
+  --bg:#F1F5F9;--card:#fff;--tx:#0F172A;--muted:#64748B;--bdr:#E2E8F0
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:70px}
+.screen{display:none;padding:16px;max-width:480px;margin:0 auto}
+.screen.active{display:block}
+/* NAV */
+#nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--bdr);display:flex;z-index:100}
+.nav-btn{flex:1;padding:10px 0 6px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);font-size:10px}
+.nav-btn.active{color:var(--p)}
+.nav-btn svg{width:22px;height:22px}
+/* HEADER */
+.hdr{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.hdr-back{background:none;border:none;cursor:pointer;padding:4px;color:var(--tx)}
+.hdr h2{font-size:18px;font-weight:700}
+/* CARD */
+.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;border:1px solid var(--bdr)}
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-p{background:var(--pl);color:var(--p)}
+.badge-ok{background:#D1FAE5;color:#065F46}
+.badge-warn{background:#FEF3C7;color:#92400E}
+/* PROGRESS BAR */
+.prog-wrap{background:#E2E8F0;border-radius:99px;height:6px;overflow:hidden}
+.prog-bar{height:100%;background:var(--p);border-radius:99px;transition:width .4s}
+/* BTN */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 20px;border-radius:12px;border:none;cursor:pointer;font-size:14px;font-weight:600;transition:opacity .15s}
+.btn:active{opacity:.8}
+.btn-primary{background:var(--p);color:#fff;width:100%}
+.btn-secondary{background:var(--pl);color:var(--p);width:100%}
+.btn-sm{padding:8px 14px;font-size:13px}
+/* HOME */
+.greeting-card{background:linear-gradient(135deg,var(--p),var(--pd));border-radius:20px;padding:20px;color:#fff;margin-bottom:16px}
+.streak-row{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;opacity:.9}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat-box{background:var(--card);border-radius:14px;padding:14px 10px;text-align:center;border:1px solid var(--bdr)}
+.stat-num{font-size:22px;font-weight:800;color:var(--p)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.daily-row{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.daily-item{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:12px;padding:12px;border:1px solid var(--bdr)}
+.daily-item.done{border-color:var(--ok);background:#F0FDF4}
+.daily-icon{width:36px;height:36px;border-radius:10px;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.daily-item.done .daily-icon{background:#D1FAE5}
+.daily-text{flex:1}
+.daily-text strong{font-size:13px}
+.daily-text p{font-size:12px;color:var(--muted)}
+/* PWA INSTALL BANNER */
+#install-banner{background:var(--warn);color:#000;padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:13px;position:sticky;top:0;z-index:99}
+#install-banner button{margin-left:auto;background:#000;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;white-space:nowrap}
+/* VOCAB */
+.flashcard{background:var(--card);border-radius:20px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;cursor:pointer;border:1px solid var(--bdr);margin-bottom:14px;position:relative;transition:all .2s}
+.flashcard .fc-front{text-align:center}
+.flashcard .fc-word{font-size:32px;font-weight:800;color:var(--p)}
+.flashcard .fc-ph{color:var(--muted);font-size:14px;margin-top:4px}
+.flashcard .fc-back{display:none;text-align:center}
+.flashcard.flipped .fc-front{display:none}
+.flashcard.flipped .fc-back{display:block}
+.flashcard .fc-meaning{font-size:22px;font-weight:700;margin-bottom:8px}
+.flashcard .fc-ex{font-size:13px;color:var(--muted);font-style:italic;line-height:1.5}
+.fc-actions{display:flex;gap:10px;margin-bottom:14px}
+.quiz-opt{background:var(--card);border:2px solid var(--bdr);border-radius:12px;padding:14px;cursor:pointer;width:100%;text-align:left;font-size:14px;transition:all .15s;margin-bottom:8px}
+.quiz-opt.correct{border-color:var(--ok);background:#F0FDF4;color:#065F46}
+.quiz-opt.wrong{border-color:var(--err);background:#FEF2F2;color:#991B1B}
+.filter-row{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
+.filter-btn{padding:6px 12px;border-radius:20px;border:1px solid var(--bdr);background:var(--card);font-size:12px;cursor:pointer;white-space:nowrap;color:var(--muted)}
+.filter-btn.active{background:var(--p);color:#fff;border-color:var(--p)}
+.mode-toggle{display:flex;background:var(--bdr);border-radius:10px;padding:3px;margin-bottom:14px}
+.mode-btn{flex:1;padding:8px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;background:none;color:var(--muted)}
+.mode-btn.active{background:#fff;color:var(--p)}
+/* GRAMMAR */
+.topic-item{background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;border:1px solid var(--bdr);cursor:pointer;display:flex;align-items:center;gap:12px}
+.topic-icon{width:42px;height:42px;border-radius:12px;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.topic-body{flex:1}
+.topic-title{font-weight:700;font-size:14px;margin-bottom:4px}
+.topic-sub{font-size:12px;color:var(--muted);margin-bottom:6px}
+.expl-box{background:#F8FAFC;border-radius:12px;padding:14px;margin-bottom:14px;border-left:3px solid var(--p)}
+.expl-box h3{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--p)}
+.expl-box p{font-size:13px;line-height:1.6;color:var(--tx)}
+.eg-item{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.eg-item:last-child{border-bottom:none}
+.eg-en{font-size:13px;font-weight:600;flex:1}
+.eg-id{font-size:12px;color:var(--muted)}
+.q-card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid var(--bdr)}
+.q-num{font-size:11px;color:var(--muted);margin-bottom:6px}
+.q-text{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:14px}
+.score-circle{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;margin:0 auto 12px;border:6px solid}
+/* CONVO */
+.scenario-item{background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;border:1px solid var(--bdr);cursor:pointer;display:flex;gap:12px;align-items:flex-start}
+.sc-emoji{font-size:28px;flex-shrink:0;margin-top:2px}
+.sc-body{flex:1}
+.sc-title{font-weight:700;font-size:14px;margin-bottom:3px}
+.sc-desc{font-size:12px;color:var(--muted);margin-bottom:6px}
+.bubble-wrap{margin-bottom:16px}
+.bubble{border-radius:16px;padding:12px 14px;max-width:85%;margin-bottom:6px;font-size:13px;line-height:1.5}
+.bubble.them{background:#F1F5F9;border-bottom-left-radius:4px;align-self:flex-start}
+.bubble.me{background:var(--p);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;margin-left:auto}
+.bubble-container{display:flex;flex-direction:column}
+.bubble-tr{font-size:11px;color:var(--muted);padding:0 4px 8px;max-width:85%}
+.bubble-tr.me-tr{margin-left:auto;text-align:right}
+.answer-block{background:#F0FDF4;border-radius:12px;padding:12px;margin-bottom:12px;border:1px solid #A7F3D0;display:none}
+.answer-block .ans-en{font-weight:600;font-size:14px;margin-bottom:4px}
+.answer-block .ans-id{font-size:12px;color:var(--muted)}
+textarea.user-input{width:100%;border:1px solid var(--bdr);border-radius:12px;padding:12px;font-size:14px;resize:none;outline:none;font-family:inherit;min-height:80px}
+textarea.user-input:focus{border-color:var(--p)}
+/* SPEAKING */
+.speak-item{background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;border:1px solid var(--bdr);cursor:pointer;display:flex;gap:12px;align-items:center}
+.speak-item.locked{opacity:.5;cursor:not-allowed}
+.speak-cat{font-size:11px;color:var(--muted);margin-bottom:3px}
+.speak-q{font-size:14px;font-weight:600}
+.tip-box{background:#FEF3C7;border-radius:12px;padding:12px;margin-bottom:14px;border-left:3px solid var(--warn)}
+.tip-box p{font-size:13px;line-height:1.5;color:#92400E}
+.mic-btn{width:80px;height:80px;border-radius:50%;background:var(--p);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 4px 20px rgba(79,70,229,.35);transition:all .2s}
+.mic-btn.recording{animation:pulse 1.2s infinite;background:var(--err)}
+.mic-btn svg{width:36px;height:36px;color:#fff;fill:#fff}
+@keyframes pulse{0%,100%{box-shadow:0 4px 20px rgba(239,68,68,.4)}50%{box-shadow:0 4px 32px rgba(239,68,68,.7),0 0 0 12px rgba(239,68,68,.1)}}
+.transcript-box{background:#F8FAFC;border-radius:12px;padding:12px;min-height:60px;margin-bottom:14px;font-size:14px;color:var(--tx);border:1px dashed var(--bdr)}
+.sample-box{background:var(--pl);border-radius:12px;padding:12px;margin-bottom:14px}
+.sample-box .sample-en{font-size:14px;font-weight:600;margin-bottom:4px;color:var(--pd)}
+.sample-box .sample-id{font-size:12px;color:var(--muted)}
+.phase-label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+/* COMPLETION */
+.completion{text-align:center;padding:32px 16px}
+.completion h2{font-size:22px;font-weight:800;margin-bottom:8px}
+.completion p{color:var(--muted);margin-bottom:24px}
+</style>
+</head>
+<body>
+
+<div id="install-banner" style="display:none">
+  📲 Install app ke HP untuk akses offline!
+  <button id="install-btn">Install</button>
+</div>
+
+<!-- HOME -->
+<div id="s-home" class="screen active">
+  <div id="home-content"></div>
+</div>
+
+<!-- VOCAB -->
+<div id="s-vocab" class="screen">
+  <div id="vocab-content"></div>
+</div>
+
+<!-- GRAMMAR -->
+<div id="s-grammar" class="screen">
+  <div id="grammar-content"></div>
+</div>
+
+<!-- CONVO -->
+<div id="s-convo" class="screen">
+  <div id="convo-content"></div>
+</div>
+
+<!-- SPEAKING -->
+<div id="s-speaking" class="screen">
+  <div id="speak-content"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav id="nav">
+  <button class="nav-btn active" onclick="goTo('home')" id="nav-home">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    Beranda
+  </button>
+  <button class="nav-btn" onclick="goTo('vocab')" id="nav-vocab">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6a2 2 0 0 0-2 2v16l4-2 4 2 4-2 4 2V4a2 2 0 0 0-2-2zm-2 10H8v-2h8v2zm0-4H8V6h8v2z"/></svg>
+    Vocab
+  </button>
+  <button class="nav-btn" onclick="goTo('grammar')" id="nav-grammar">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"/></svg>
+    Grammar
+  </button>
+  <button class="nav-btn" onclick="goTo('convo')" id="nav-convo">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    Percakapan
+  </button>
+  <button class="nav-btn" onclick="goTo('speaking')" id="nav-speaking">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+    Speaking
+  </button>
+</nav>
+
+<script>
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+
+const VOCAB = [
+  // FASE 1 — 30 kata
+  {id:1,ph:1,en:'resolve',id_:'menyelesaikan',ex:'I will resolve your issue quickly.',pronunciation:'rih-ZOLV'},
+  {id:2,ph:1,en:'assist',id_:'membantu',ex:'Can I assist you with anything?',pronunciation:'uh-SIST'},
+  {id:3,ph:1,en:'confirm',id_:'mengkonfirmasi',ex:'Please confirm your email address.',pronunciation:'kun-FERM'},
+  {id:4,ph:1,en:'submit',id_:'mengirimkan',ex:'Please submit your application online.',pronunciation:'sub-MIT'},
+  {id:5,ph:1,en:'update',id_:'memperbarui',ex:'I will update the system now.',pronunciation:'UP-dayt'},
+  {id:6,ph:1,en:'process',id_:'memproses',ex:'We will process your order today.',pronunciation:'PROS-es'},
+  {id:7,ph:1,en:'cancel',id_:'membatalkan',ex:'You can cancel anytime.',pronunciation:'KAN-sul'},
+  {id:8,ph:1,en:'request',id_:'permintaan',ex:'Your request has been received.',pronunciation:'rih-KWEST'},
+  {id:9,ph:1,en:'support',id_:'dukungan',ex:'Our support team is available 24/7.',pronunciation:'suh-PORT'},
+  {id:10,ph:1,en:'contact',id_:'menghubungi',ex:'Please contact us if you need help.',pronunciation:'KON-takt'},
+  {id:11,ph:1,en:'check',id_:'memeriksa',ex:'Let me check your account.',pronunciation:'CHEK'},
+  {id:12,ph:1,en:'verify',id_:'memverifikasi',ex:'I need to verify your identity.',pronunciation:'VER-ih-fye'},
+  {id:13,ph:1,en:'deliver',id_:'mengirimkan',ex:'We will deliver your package tomorrow.',pronunciation:'dih-LIV-ur'},
+  {id:14,ph:1,en:'track',id_:'melacak',ex:'You can track your order here.',pronunciation:'TRAK'},
+  {id:15,ph:1,en:'report',id_:'melaporkan',ex:'Please report any issues immediately.',pronunciation:'rih-PORT'},
+  {id:16,ph:1,en:'complete',id_:'menyelesaikan',ex:'Please complete the form below.',pronunciation:'kum-PLEET'},
+  {id:17,ph:1,en:'available',id_:'tersedia',ex:'This product is available in stock.',pronunciation:'uh-VAY-luh-bul'},
+  {id:18,ph:1,en:'receive',id_:'menerima',ex:'Did you receive my email?',pronunciation:'rih-SEEV'},
+  {id:19,ph:1,en:'respond',id_:'merespons',ex:'I will respond to you shortly.',pronunciation:'rih-SPOND'},
+  {id:20,ph:1,en:'arrange',id_:'mengatur',ex:'I will arrange a meeting for you.',pronunciation:'uh-RAYNJ'},
+  {id:21,ph:1,en:'schedule',id_:'menjadwalkan',ex:'Let me schedule a callback.',pronunciation:'SKEJ-ool'},
+  {id:22,ph:1,en:'follow up',id_:'menindaklanjuti',ex:'I will follow up with you tomorrow.',pronunciation:'FOL-oh UP'},
+  {id:23,ph:1,en:'refund',id_:'pengembalian dana',ex:'Your refund will be processed in 3 days.',pronunciation:'REE-fund'},
+  {id:24,ph:1,en:'replace',id_:'mengganti',ex:'We will replace the damaged item.',pronunciation:'rih-PLAYS'},
+  {id:25,ph:1,en:'apologize',id_:'meminta maaf',ex:'I apologize for the inconvenience.',pronunciation:'uh-POL-uh-jyz'},
+  {id:26,ph:1,en:'provide',id_:'memberikan',ex:'Please provide your order number.',pronunciation:'pruh-VYD'},
+  {id:27,ph:1,en:'access',id_:'mengakses',ex:'You can access your account here.',pronunciation:'AK-ses'},
+  {id:28,ph:1,en:'connect',id_:'menghubungkan',ex:'Let me connect you to a specialist.',pronunciation:'kuh-NEKT'},
+  {id:29,ph:1,en:'explain',id_:'menjelaskan',ex:'Could you explain the problem?',pronunciation:'ek-SPLAYN'},
+  {id:30,ph:1,en:'mention',id_:'menyebutkan',ex:'You mentioned a billing issue.',pronunciation:'MEN-shun'},
+  // FASE 2 — 20 kata
+  {id:31,ph:2,en:'collaborate',id_:'berkolaborasi',ex:'We need to collaborate on this project.',pronunciation:'kuh-LAB-uh-rayt'},
+  {id:32,ph:2,en:'implement',id_:'mengimplementasikan',ex:'We will implement the new system next week.',pronunciation:'IM-pluh-ment'},
+  {id:33,ph:2,en:'escalate',id_:'mengeskalaikan',ex:'I need to escalate this to my manager.',pronunciation:'ES-kuh-layt'},
+  {id:34,ph:2,en:'prioritize',id_:'memprioritaskan',ex:'Please prioritize this ticket.',pronunciation:'pry-OR-ih-tyz'},
+  {id:35,ph:2,en:'evaluate',id_:'mengevaluasi',ex:'We need to evaluate the results.',pronunciation:'ih-VAL-yoo-ayt'},
+  {id:36,ph:2,en:'negotiate',id_:'bernegosiasi',ex:'Let us negotiate a better price.',pronunciation:'nih-GOH-shee-ayt'},
+  {id:37,ph:2,en:'coordinate',id_:'mengkoordinasikan',ex:'I coordinate between teams daily.',pronunciation:'koh-OR-dih-nayt'},
+  {id:38,ph:2,en:'deadline',id_:'batas waktu',ex:'The deadline is next Friday.',pronunciation:'DED-layn'},
+  {id:39,ph:2,en:'feedback',id_:'umpan balik',ex:'I appreciate your feedback.',pronunciation:'FEED-bak'},
+  {id:40,ph:2,en:'efficient',id_:'efisien',ex:'We need a more efficient process.',pronunciation:'ih-FISH-unt'},
+  {id:41,ph:2,en:'contribute',id_:'berkontribusi',ex:'I want to contribute to the team.',pronunciation:'kun-TRIB-yoot'},
+  {id:42,ph:2,en:'monitor',id_:'memantau',ex:'I monitor system performance daily.',pronunciation:'MON-ih-tur'},
+  {id:43,ph:2,en:'maintain',id_:'memelihara',ex:'We maintain quality standards.',pronunciation:'mayn-TAYN'},
+  {id:44,ph:2,en:'integrate',id_:'mengintegrasikan',ex:'We need to integrate both systems.',pronunciation:'IN-tih-grayt'},
+  {id:45,ph:2,en:'migrate',id_:'memindahkan data',ex:'We will migrate the data this weekend.',pronunciation:'MY-grayt'},
+  {id:46,ph:2,en:'annotate',id_:'memberi anotasi',ex:'I annotate data for AI training.',pronunciation:'AN-oh-tayt'},
+  {id:47,ph:2,en:'accuracy',id_:'akurasi',ex:'Data accuracy is very important.',pronunciation:'AK-yuh-ruh-see'},
+  {id:48,ph:2,en:'efficient',id_:'efisien',ex:'Find a more efficient solution.',pronunciation:'ih-FISH-unt'},
+  {id:49,ph:2,en:'workflow',id_:'alur kerja',ex:'Let me explain our workflow.',pronunciation:'WERK-floh'},
+  {id:50,ph:2,en:'objective',id_:'tujuan',ex:'What is the main objective here?',pronunciation:'ob-JEK-tiv'},
+  // FASE 3 — 12 kata
+  {id:51,ph:3,en:'negotiate',id_:'bernegosiasi',ex:'I want to negotiate my salary.',pronunciation:'nih-GOH-shee-ayt'},
+  {id:52,ph:3,en:'initiative',id_:'inisiatif',ex:'Taking initiative is important at work.',pronunciation:'ih-NISH-uh-tiv'},
+  {id:53,ph:3,en:'strategic',id_:'strategis',ex:'We need a strategic approach.',pronunciation:'struh-TEE-jik'},
+  {id:54,ph:3,en:'stakeholder',id_:'pemangku kepentingan',ex:'Keep stakeholders informed at all times.',pronunciation:'STAYK-hohl-dur'},
+  {id:55,ph:3,en:'KPI',id_:'indikator kinerja utama',ex:'We need to track our KPIs monthly.',pronunciation:'KAY-PEE-EYE'},
+  {id:56,ph:3,en:'benchmark',id_:'tolok ukur',ex:'Set a benchmark for performance.',pronunciation:'BENCH-mark'},
+  {id:57,ph:3,en:'leverage',id_:'memanfaatkan',ex:'We can leverage this technology.',pronunciation:'LEV-ur-ij'},
+  {id:58,ph:3,en:'scalable',id_:'dapat diskalakan',ex:'Build a scalable solution.',pronunciation:'SKAY-luh-bul'},
+  {id:59,ph:3,en:'proactive',id_:'proaktif',ex:'Be proactive in solving problems.',pronunciation:'proh-AK-tiv'},
+  {id:60,ph:3,en:'transparency',id_:'transparansi',ex:'Transparency builds trust in a team.',pronunciation:'trans-PAIR-un-see'},
+  {id:61,ph:3,en:'compliance',id_:'kepatuhan',ex:'We must ensure regulatory compliance.',pronunciation:'kum-PLY-uns'},
+  {id:62,ph:3,en:'optimization',id_:'optimasi',ex:'Focus on process optimization.',pronunciation:'op-tih-mih-ZAY-shun'},
+];
+
+const GRAMMAR = [
+  {
+    id:'g1',title:'Simple Present',titleId:'Kalimat Sederhana Saat Ini',icon:'📝',
+    expl:'Gunakan Simple Present untuk kebiasaan, fakta, atau jadwal rutin.\n\nRumus: S + V1 (s/es untuk he/she/it)',
+    eg:[
+      {en:'I handle customer complaints daily.',id:'Saya menangani keluhan pelanggan setiap hari.'},
+      {en:'She processes orders every morning.',id:'Dia memproses pesanan setiap pagi.'},
+      {en:'We support clients in three countries.',id:'Kami mendukung klien di tiga negara.'},
+    ],
+    ex:[
+      {q:'She ___ (work) in tech support.',opts:['works','work','working','worked'],ans:0,exp:'He/She/It + works (tambah -s)'},
+      {q:'I ___ (check) emails every morning.',opts:['check','checks','checking','checked'],ans:0,exp:'I + V1 tanpa -s'},
+      {q:'The system ___ (update) automatically.',opts:['updates','update','updated','updating'],ans:0,exp:'The system = it, tambah -s'},
+      {q:'We ___ (process) 100 orders daily.',opts:['process','processes','processed','processing'],ans:0,exp:'We + V1 tanpa -s'},
+      {q:'He ___ (resolve) issues quickly.',opts:['resolves','resolve','resolving','resolved'],ans:0,exp:'He + V1 + -s'},
+    ]
+  },
+  {
+    id:'g2',title:'Simple Past',titleId:'Kalimat Masa Lalu',icon:'⏮️',
+    expl:'Gunakan Simple Past untuk kejadian yang sudah selesai di masa lalu.\n\nRumus: S + V2 (atau V1 + -ed untuk kata kerja reguler)',
+    eg:[
+      {en:'I resolved the customer\'s issue yesterday.',id:'Saya menyelesaikan masalah pelanggan kemarin.'},
+      {en:'She submitted the report on time.',id:'Dia menyerahkan laporan tepat waktu.'},
+      {en:'We completed the project last week.',id:'Kami menyelesaikan proyek minggu lalu.'},
+    ],
+    ex:[
+      {q:'I ___ (submit) the form yesterday.',opts:['submitted','submit','submits','submitting'],ans:0,exp:'Kata kerja reguler: submit + -ted'},
+      {q:'She ___ (resolve) the complaint.',opts:['resolved','resolve','resolves','resolving'],ans:0,exp:'resolve + -d untuk past tense'},
+      {q:'We ___ (process) 200 orders last week.',opts:['processed','process','processes','processing'],ans:0,exp:'process + -ed untuk past tense'},
+      {q:'He ___ (contact) the supplier.',opts:['contacted','contact','contacts','contacting'],ans:0,exp:'contact + -ed'},
+      {q:'They ___ (complete) the training.',opts:['completed','complete','completes','completing'],ans:0,exp:'complete + -d'},
+    ]
+  },
+  {
+    id:'g3',title:'Modal Verbs',titleId:'Kata Kerja Modal',icon:'🔧',
+    expl:'Modal verbs menyatakan kemampuan, kemungkinan, atau izin.\n\nCan = bisa | Will = akan | Would = lebih sopan | Could = bisa (sopan) | Should = sebaiknya | Must = harus',
+    eg:[
+      {en:'I can help you with that.',id:'Saya bisa membantu Anda dengan itu.'},
+      {en:'Could you please hold for a moment?',id:'Bisakah Anda tunggu sebentar?'},
+      {en:'You should update your password regularly.',id:'Sebaiknya Anda memperbarui kata sandi secara rutin.'},
+    ],
+    ex:[
+      {q:'___ you please provide your order number?',opts:['Could','Can','Should','Must'],ans:0,exp:'Could = lebih sopan dari Can dalam konteks profesional'},
+      {q:'I ___ resolve this for you right away.',opts:['will','would','should','could'],ans:0,exp:'Will = akan (komitmen langsung)'},
+      {q:'You ___ restart the device to fix the issue.',opts:['should','will','can','would'],ans:0,exp:'Should = rekomendasi/saran'},
+      {q:'___ I speak to the manager please?',opts:['Could','Will','Should','Must'],ans:0,exp:'Could I = meminta izin dengan sopan'},
+      {q:'This feature ___ be available next month.',opts:['will','should','must','can'],ans:0,exp:'Will = future certainty'},
+    ]
+  },
+  {
+    id:'g4',title:'Forming Questions',titleId:'Membuat Pertanyaan',icon:'❓',
+    expl:'Ada dua jenis pertanyaan:\n\n• Yes/No: Do/Does/Did + S + V1\n• WH-Questions: Wh-word + Do/Does/Did + S + V1',
+    eg:[
+      {en:'Do you have your order number?',id:'Apakah Anda punya nomor pesanan?'},
+      {en:'What seems to be the problem?',id:'Apa masalah yang Anda hadapi?'},
+      {en:'When did you receive the package?',id:'Kapan Anda menerima paketnya?'},
+    ],
+    ex:[
+      {q:'___ you receive my email?',opts:['Did','Do','Does','Have'],ans:0,exp:'Pertanyaan past tense: Did + S + V1'},
+      {q:'What ___ the error message say?',opts:['does','do','did','is'],ans:0,exp:'What does... = present tense question dengan it/the'},
+      {q:'___ I help you with anything else?',opts:['Can','Do','Did','Does'],ans:0,exp:'Can I = menawarkan bantuan'},
+      {q:'When ___ the issue start?',opts:['did','does','do','has'],ans:0,exp:'When did... = menanyakan waktu di masa lalu'},
+      {q:'How ___ I escalate this ticket?',opts:['can','do','did','does'],ans:0,exp:'How can I = menanyakan cara'},
+    ]
+  },
+  {
+    id:'g5',title:'Polite Expressions',titleId:'Ekspresi Sopan',icon:'🤝',
+    expl:'Ekspresi sopan sangat penting di lingkungan kerja profesional Malaysia.\n\nGunakan: I would like to, Could you, Would you mind, I apologize, Thank you for...',
+    eg:[
+      {en:'I would like to request an update.',id:'Saya ingin meminta pembaruan informasi.'},
+      {en:'Would you mind waiting for a moment?',id:'Apakah Anda keberatan menunggu sebentar?'},
+      {en:'I apologize for the inconvenience caused.',id:'Saya minta maaf atas ketidaknyamanan yang terjadi.'},
+    ],
+    ex:[
+      {q:'___ like to make a complaint.',opts:['I would','I will','I can','I do'],ans:0,exp:'I would like to = cara sopan menyatakan keinginan'},
+      {q:'Would you mind ___ your details?',opts:['confirming','confirm','confirmed','confirms'],ans:0,exp:'Would you mind + V-ing'},
+      {q:'___ for the inconvenience.',opts:['I apologize','I sorry','I apology','Sorry I'],ans:0,exp:'I apologize = cara formal minta maaf'},
+      {q:'Thank you ___ contacting us.',opts:['for','to','of','about'],ans:0,exp:'Thank you for + V-ing'},
+      {q:'Could you please ___ your email?',opts:['confirm','confirming','confirmed','confirms'],ans:0,exp:'Could you please + V1 (base form)'},
+    ]
+  },
+  {
+    id:'g6',title:'Negation',titleId:'Kalimat Negatif',icon:'🚫',
+    expl:'Membuat kalimat negatif:\n\n• Present: do not (don\'t) / does not (doesn\'t) + V1\n• Past: did not (didn\'t) + V1\n• Modal: modal + not + V1',
+    eg:[
+      {en:'I don\'t have access to that system.',id:'Saya tidak punya akses ke sistem itu.'},
+      {en:'She didn\'t receive the confirmation email.',id:'Dia tidak menerima email konfirmasi.'},
+      {en:'This feature is not available yet.',id:'Fitur ini belum tersedia.'},
+    ],
+    ex:[
+      {q:'I ___ receive your message.',opts:['didn\'t','don\'t','doesn\'t','wasn\'t'],ans:0,exp:'Past negatif: didn\'t + V1'},
+      {q:'She ___ work on weekends.',opts:['doesn\'t','don\'t','didn\'t','isn\'t'],ans:0,exp:'She = doesn\'t untuk present negatif'},
+      {q:'The package ___ arrive yet.',opts:['hasn\'t','didn\'t','doesn\'t','won\'t'],ans:0,exp:'hasn\'t arrived = belum tiba (present perfect negatif)'},
+      {q:'We ___ be able to process this today.',opts:['won\'t','don\'t','didn\'t','aren\'t'],ans:0,exp:'Won\'t = will not (future negatif)'},
+      {q:'I ___ understand the error message.',opts:['don\'t','doesn\'t','didn\'t','can\'t'],ans:0,exp:'I + don\'t untuk present negatif'},
+    ]
+  },
+];
+
+const SCENARIOS = [
+  {
+    id:'s1',emoji:'💼',title:'Wawancara Kerja',desc:'Latihan menjawab pertanyaan interview untuk posisi tech support',ph:1,
+    steps:[
+      {speaker:'Interviewer',en:'Good morning! Please tell me about yourself and why you want to work here.',id:'Selamat pagi! Tolong ceritakan tentang diri Anda dan mengapa ingin bekerja di sini.',
+       sample:{en:'Good morning! My name is [Name]. I have experience in customer service and I am passionate about helping people solve problems. I want to work here because your company has a great reputation for supporting customers.',id:'Selamat pagi! Nama saya [Nama]. Saya memiliki pengalaman di bidang layanan pelanggan dan sangat senang membantu orang menyelesaikan masalah. Saya ingin bekerja di sini karena perusahaan Anda memiliki reputasi yang baik dalam mendukung pelanggan.'}},
+      {speaker:'Interviewer',en:'What are your strengths that would help in a tech support role?',id:'Apa kekuatan Anda yang akan membantu dalam peran tech support?',
+       sample:{en:'I am patient, good at listening, and I can explain technical things in a simple way. I also learn new technology quickly and stay calm when dealing with difficult situations.',id:'Saya sabar, pandai mendengarkan, dan dapat menjelaskan hal teknis dengan cara sederhana. Saya juga cepat belajar teknologi baru dan tetap tenang saat menghadapi situasi sulit.'}},
+      {speaker:'Interviewer',en:'How would you handle an angry customer who is frustrated with our product?',id:'Bagaimana Anda akan menangani pelanggan yang marah dan frustrasi dengan produk kami?',
+       sample:{en:'I would first listen carefully and let them express their concerns. Then I would apologize for the inconvenience and assure them I will resolve the issue. I would stay calm and professional throughout.',id:'Saya akan mendengarkan dengan seksama dan membiarkan mereka menyampaikan kekhawatiran mereka. Kemudian saya akan meminta maaf atas ketidaknyamanan dan memastikan saya akan menyelesaikan masalah. Saya akan tetap tenang dan profesional.'}},
+      {speaker:'Interviewer',en:'Where do you see yourself in 3 years?',id:'Di mana Anda melihat diri Anda dalam 3 tahun ke depan?',
+       sample:{en:'In 3 years, I hope to grow within this company, perhaps moving into a senior support role or team lead position. I want to develop my technical skills and contribute more to the team.',id:'Dalam 3 tahun, saya berharap dapat berkembang dalam perusahaan ini, mungkin beralih ke peran dukungan senior atau posisi pemimpin tim. Saya ingin mengembangkan keterampilan teknis dan berkontribusi lebih untuk tim.'}},
+      {speaker:'Interviewer',en:'Do you have any questions for us?',id:'Apakah Anda memiliki pertanyaan untuk kami?',
+       sample:{en:'Yes, I do. Could you tell me more about the training program for new employees? And what does a typical day look like for the tech support team?',id:'Ya. Bisakah Anda ceritakan lebih lanjut tentang program pelatihan untuk karyawan baru? Dan seperti apa hari biasa untuk tim tech support?'}},
+    ]
+  },
+  {
+    id:'s2',emoji:'💬',title:'Customer Support Chat',desc:'Latihan membantu pelanggan melalui chat online',ph:1,
+    steps:[
+      {speaker:'Customer',en:'Hi, I haven\'t received my order yet. It was supposed to arrive 3 days ago!',id:'Halo, saya belum menerima pesanan saya. Seharusnya tiba 3 hari yang lalu!',
+       sample:{en:'Hello! I\'m sorry to hear that. I understand how frustrating this must be. Could you please provide me with your order number so I can check the status for you right away?',id:'Halo! Saya minta maaf mendengar itu. Saya mengerti betapa frustrasinya ini. Bisakah Anda berikan nomor pesanan Anda agar saya dapat memeriksa statusnya segera?'}},
+      {speaker:'Customer',en:'My order number is ORD-12345. I need this urgently!',id:'Nomor pesanan saya ORD-12345. Saya sangat membutuhkan ini segera!',
+       sample:{en:'Thank you for the order number. I can see your order ORD-12345 is currently with the courier. There was a slight delay due to high demand. I sincerely apologize for this. I will request an urgent delivery update now.',id:'Terima kasih atas nomor pesanan. Saya melihat pesanan ORD-12345 Anda sedang bersama kurir. Ada sedikit keterlambatan karena permintaan tinggi. Saya sungguh meminta maaf. Saya akan meminta pembaruan pengiriman mendesak sekarang.'}},
+      {speaker:'Customer',en:'This is not acceptable. I want a refund or compensation!',id:'Ini tidak bisa diterima. Saya ingin pengembalian dana atau kompensasi!',
+       sample:{en:'I completely understand your frustration and I sincerely apologize. I can offer you a voucher for your next order as compensation. Or if you prefer, I can process a full refund. Which would you prefer?',id:'Saya sepenuhnya memahami frustrasi Anda dan saya sungguh meminta maaf. Saya dapat menawarkan voucher untuk pesanan berikutnya sebagai kompensasi. Atau jika Anda mau, saya bisa proses pengembalian dana penuh. Yang mana yang Anda inginkan?'}},
+      {speaker:'Customer',en:'Fine, I\'ll take the voucher. When will I receive it?',id:'Baiklah, saya akan ambil vouchernya. Kapan saya akan menerimanya?',
+       sample:{en:'Great choice! Your voucher will be sent to your registered email within 2 hours. You will also receive a tracking update for your current order. Is there anything else I can help you with today?',id:'Pilihan yang baik! Voucher Anda akan dikirim ke email terdaftar dalam 2 jam. Anda juga akan menerima pembaruan pelacakan untuk pesanan Anda saat ini. Apakah ada hal lain yang bisa saya bantu hari ini?'}},
+    ]
+  },
+  {
+    id:'s3',emoji:'👥',title:'Rapat Tim Mingguan',desc:'Latihan berbicara dalam meeting tim profesional',ph:2,
+    steps:[
+      {speaker:'Manager',en:'Let\'s start our weekly meeting. Can you give us an update on your tasks this week?',id:'Mari kita mulai rapat mingguan. Bisakah Anda memberi kami pembaruan tentang tugas Anda minggu ini?',
+       sample:{en:'Sure! This week I completed the data annotation task for the AI project — 500 items done. I also resolved 23 customer tickets with a satisfaction rate of 95%. Currently, I\'m working on the report for next week.',id:'Tentu! Minggu ini saya menyelesaikan tugas anotasi data untuk proyek AI — 500 item selesai. Saya juga menyelesaikan 23 tiket pelanggan dengan tingkat kepuasan 95%. Saat ini, saya sedang mengerjakan laporan untuk minggu depan.'}},
+      {speaker:'Manager',en:'Good work. Are there any blockers or issues you need help with?',id:'Kerja bagus. Apakah ada hambatan atau masalah yang perlu bantuan?',
+       sample:{en:'Thank you. Yes, I have one challenge. I need access to the new database to complete the report. Could someone help me with the permissions? Also, I\'d like to discuss the priority order for next week\'s tasks.',id:'Terima kasih. Ya, saya punya satu tantangan. Saya butuh akses ke database baru untuk menyelesaikan laporan. Bisakah seseorang membantu saya dengan izin akses? Juga, saya ingin mendiskusikan urutan prioritas untuk tugas minggu depan.'}},
+      {speaker:'Manager',en:'I\'ll sort out the access today. What are your goals for next week?',id:'Saya akan mengurus akses hari ini. Apa target Anda untuk minggu depan?',
+       sample:{en:'Thank you! For next week, my main goal is to finish the Q2 report by Wednesday. I also plan to train the new team member on our annotation process. And I\'d like to improve my response time from 4 hours to 3 hours on average.',id:'Terima kasih! Untuk minggu depan, tujuan utama saya adalah menyelesaikan laporan Q2 pada hari Rabu. Saya juga berencana melatih anggota tim baru tentang proses anotasi kami. Dan saya ingin meningkatkan waktu respons dari 4 jam menjadi 3 jam rata-rata.'}},
+    ]
+  },
+  {
+    id:'s4',emoji:'📧',title:'Email Profesional',desc:'Latihan menulis dan membalas email kerja dalam bahasa Inggris',ph:2,
+    steps:[
+      {speaker:'Email dari Manager',en:'Hi, I need you to prepare a summary of this month\'s customer satisfaction scores and send it to me by end of day.',id:'Hai, saya perlu Anda menyiapkan ringkasan skor kepuasan pelanggan bulan ini dan mengirimkannya kepada saya sebelum akhir hari.',
+       sample:{en:'Dear [Manager\'s Name],\n\nThank you for your email. I will prepare the customer satisfaction summary as requested.\n\nI will send it to you by 5:00 PM today.\n\nBest regards,\n[Your Name]',id:'Yang Terhormat [Nama Manager],\n\nTerima kasih atas email Anda. Saya akan menyiapkan ringkasan kepuasan pelanggan seperti yang diminta.\n\nSaya akan mengirimkannya kepada Anda sebelum pukul 17.00 hari ini.\n\nHormat saya,\n[Nama Anda]'}},
+      {speaker:'Klien',en:'Hello, I\'m writing to follow up on my complaint submitted 3 days ago. I haven\'t heard back yet.',id:'Halo, saya menulis untuk menindaklanjuti keluhan yang saya kirimkan 3 hari lalu. Saya belum mendapat kabar.',
+       sample:{en:'Dear [Client\'s Name],\n\nThank you for following up. I sincerely apologize for the delay in our response. I have reviewed your complaint and I am pleased to inform you that the issue has been resolved.\n\nPlease let me know if you need further assistance.\n\nBest regards,\n[Your Name]',id:'Yang Terhormat [Nama Klien],\n\nTerima kasih telah menindaklanjuti. Saya sungguh meminta maaf atas keterlambatan respons kami. Saya telah meninjau keluhan Anda dan dengan senang hati menginformasikan bahwa masalah telah diselesaikan.\n\nHarap hubungi saya jika butuh bantuan lebih lanjut.\n\nHormat saya,\n[Nama Anda]'}},
+      {speaker:'Rekan Kerja',en:'Can you cover my shift next Monday? I have a medical appointment.',id:'Bisakah kamu menggantikan shiftku Senin depan? Saya ada janji medis.',
+       sample:{en:'Hi [Name],\n\nOf course, I\'m happy to help! I can cover your shift next Monday.\n\nI hope your appointment goes well. Please let me know if there\'s anything I need to prepare.\n\nBest regards,\n[Your Name]',id:'Hai [Nama],\n\nTentu saja, saya senang membantu! Saya bisa menggantikan shift kamu Senin depan.\n\nSemoga janji kamu berjalan baik. Beritahu saya jika ada yang perlu saya persiapkan.\n\nHormat saya,\n[Nama Anda]'}},
+      {speaker:'HR',en:'Please confirm your attendance for the company training next Wednesday at 9 AM.',id:'Harap konfirmasi kehadiran Anda untuk pelatihan perusahaan Rabu depan pukul 09.00.',
+       sample:{en:'Dear HR Team,\n\nI confirm my attendance for the company training on Wednesday at 9 AM. I look forward to the session.\n\nThank you for the reminder.\n\nBest regards,\n[Your Name]',id:'Tim HR yang Terhormat,\n\nSaya mengkonfirmasi kehadiran saya untuk pelatihan perusahaan pada hari Rabu pukul 09.00. Saya menantikan sesinya.\n\nTerima kasih atas pengingatnya.\n\nHormat saya,\n[Nama Anda]'}},
+    ]
+  },
+  {
+    id:'s5',emoji:'🔧',title:'Laporan Masalah Teknis',desc:'Latihan melaporkan dan menangani isu teknis di tempat kerja',ph:1,
+    steps:[
+      {speaker:'Manager',en:'We have a system outage. Can you check what\'s happening and report back?',id:'Kami mengalami gangguan sistem. Bisakah Anda memeriksa apa yang terjadi dan melaporkan kembali?',
+       sample:{en:'Yes, I\'m on it right now. I can see the main server is not responding. I\'m running diagnostics to identify the root cause. I\'ll update you within 15 minutes.',id:'Ya, saya sedang menangani ini sekarang. Saya bisa melihat server utama tidak merespons. Saya menjalankan diagnostik untuk mengidentifikasi penyebab utama. Saya akan memperbarui Anda dalam 15 menit.'}},
+      {speaker:'Manager',en:'Customers are calling in. How serious is the issue?',id:'Pelanggan mulai menelepon. Seberapa serius masalahnya?',
+       sample:{en:'The issue is affecting about 30% of our users in the KL region. The database connection is failing due to a network timeout. I\'ve already escalated this to the infrastructure team and they are working on a fix now.',id:'Masalah ini mempengaruhi sekitar 30% pengguna kami di wilayah KL. Koneksi database gagal karena network timeout. Saya sudah mengeskalaikan ini ke tim infrastruktur dan mereka sedang mengerjakan perbaikan sekarang.'}},
+      {speaker:'Manager',en:'Good. What\'s the estimated time to resolution and what should we tell customers?',id:'Bagus. Berapa estimasi waktu penyelesaian dan apa yang harus kita katakan kepada pelanggan?',
+       sample:{en:'The estimated time to resolution is 45 minutes. I recommend we send customers this message: "We are currently experiencing a technical issue affecting some users. Our team is working to resolve this as quickly as possible. We apologize for any inconvenience." I\'ll keep you updated.',id:'Estimasi waktu penyelesaian adalah 45 menit. Saya rekomendasikan kita kirim pesan ini ke pelanggan: "Kami sedang mengalami masalah teknis yang mempengaruhi beberapa pengguna. Tim kami sedang bekerja untuk menyelesaikannya secepat mungkin. Kami mohon maaf atas ketidaknyamanan ini." Saya akan terus memperbarui Anda.'}},
+    ]
+  },
+];
+
+const SPEAKING = [
+  // FASE 1
+  {ph:1,cat:'Perkenalan',q:'Tell me about yourself in English.',tr:'Ceritakan tentang diri Anda dalam bahasa Inggris.',tip:'Sebutkan nama, asal, pekerjaan saat ini, dan tujuan karir Anda. Gunakan kalimat sederhana dan jelas.',
+   sample:{en:'My name is [Name] and I am from [City], Indonesia. Currently I am working in [field] and I am learning English to grow my career. I hope to work in Malaysia in the near future.',id:'Nama saya [Nama] dan saya berasal dari [Kota], Indonesia. Saat ini saya bekerja di bidang [bidang] dan sedang belajar bahasa Inggris untuk mengembangkan karir. Saya berharap bisa bekerja di Malaysia dalam waktu dekat.'}},
+  {ph:1,cat:'Pekerjaan',q:'Describe your daily work routine.',tr:'Ceritakan rutinitas kerja harian Anda.',tip:'Gunakan Simple Present: I start, I check, I handle. Sebutkan 3-5 aktivitas utama.',
+   sample:{en:'Every morning I start work at 8 AM. First, I check my emails and respond to urgent messages. Then I handle customer inquiries throughout the day. I also update the system with completed tasks. I finish work at 5 PM.',id:'Setiap pagi saya mulai kerja pukul 08.00. Pertama, saya memeriksa email dan merespons pesan mendesak. Kemudian saya menangani pertanyaan pelanggan sepanjang hari. Saya juga memperbarui sistem dengan tugas yang selesai. Saya selesai kerja pukul 17.00.'}},
+  {ph:1,cat:'Perkenalan',q:'Why do you want to work in Malaysia?',tr:'Mengapa Anda ingin bekerja di Malaysia?',tip:'Sebutkan alasan spesifik: kesempatan kerja, lingkungan multikultural, perkembangan karir.',
+   sample:{en:'I want to work in Malaysia because it is a great stepping stone for my international career. Malaysia has many opportunities in tech and customer service industries. I also want to improve my English skills in a professional environment.',id:'Saya ingin bekerja di Malaysia karena merupakan batu loncatan yang bagus untuk karir internasional. Malaysia memiliki banyak peluang di industri teknologi dan layanan pelanggan. Saya juga ingin meningkatkan kemampuan bahasa Inggris dalam lingkungan profesional.'}},
+  // FASE 2
+  {ph:2,cat:'Interview',q:'What are your greatest strengths?',tr:'Apa kekuatan terbesar Anda?',tip:'Sebutkan 2-3 kekuatan yang relevan dengan pekerjaan. Dukung dengan contoh singkat.',
+   sample:{en:'My greatest strengths are patience and problem-solving. When a customer is frustrated, I stay calm and listen carefully. For example, last month I resolved a complex billing issue that took 3 calls, and the customer thanked me personally.',id:'Kekuatan terbesar saya adalah kesabaran dan pemecahan masalah. Ketika pelanggan frustrasi, saya tetap tenang dan mendengarkan dengan seksama. Misalnya, bulan lalu saya menyelesaikan masalah penagihan yang rumit yang membutuhkan 3 panggilan, dan pelanggan berterima kasih secara pribadi.'}},
+  {ph:2,cat:'Interview',q:'Tell me about a time you handled a difficult situation at work.',tr:'Ceritakan saat Anda menangani situasi sulit di tempat kerja.',tip:'Gunakan STAR: Situation, Task, Action, Result. Pilih satu contoh nyata yang berhasil.',
+   sample:{en:'Once, our system crashed during peak hours and customers were very upset. My task was to manage incoming complaints. I immediately informed customers about the issue and gave realistic time estimates. I stayed calm and professional. As a result, we maintained a 90% satisfaction rate despite the technical problem.',id:'Suatu kali, sistem kami crash saat jam sibuk dan pelanggan sangat kesal. Tugas saya adalah mengelola keluhan masuk. Saya segera menginformasikan pelanggan tentang masalah dan memberikan estimasi waktu yang realistis. Saya tetap tenang dan profesional. Hasilnya, kami mempertahankan tingkat kepuasan 90% meskipun ada masalah teknis.'}},
+  {ph:2,cat:'Kerja',q:'How do you prioritize tasks when you have multiple urgent requests?',tr:'Bagaimana Anda memprioritaskan tugas ketika ada banyak permintaan mendesak?',tip:'Jelaskan sistem atau metode Anda. Sebutkan kata kunci: urgent, important, deadline.',
+   sample:{en:'I use a simple system. First, I identify which tasks are both urgent and important — these I handle immediately. Then I schedule time-sensitive tasks with clear deadlines. For less urgent tasks, I put them in a queue. I also communicate with my manager if the workload is too high.',id:'Saya menggunakan sistem sederhana. Pertama, saya mengidentifikasi tugas yang mendesak sekaligus penting — ini saya tangani segera. Kemudian saya jadwalkan tugas yang sensitif waktu dengan tenggat waktu yang jelas. Untuk tugas yang kurang mendesak, saya masukkan dalam antrian. Saya juga berkomunikasi dengan manajer jika beban kerja terlalu tinggi.'}},
+  {ph:2,cat:'Interview',q:'Where do you see yourself professionally in 3 years?',tr:'Di mana Anda melihat diri Anda secara profesional dalam 3 tahun?',tip:'Tunjukkan ambisi yang realistis dan relevan dengan posisi yang dilamar.',
+   sample:{en:'In 3 years, I see myself growing within this company. I hope to develop my technical skills and take on more responsibilities, perhaps in a senior support role or team lead position. I also want to contribute to improving our team\'s processes and customer satisfaction scores.',id:'Dalam 3 tahun, saya melihat diri saya berkembang dalam perusahaan ini. Saya berharap mengembangkan keterampilan teknis dan mengambil tanggung jawab lebih besar, mungkin dalam peran dukungan senior atau posisi pemimpin tim. Saya juga ingin berkontribusi pada peningkatan proses tim dan skor kepuasan pelanggan.'}},
+  // FASE 3
+  {ph:3,cat:'Negosiasi',q:'How would you negotiate your salary in English?',tr:'Bagaimana Anda bernegosiasi gaji dalam bahasa Inggris?',tip:'Mulai dengan mengucapkan terima kasih, lalu sampaikan harapan dengan sopan dan berikan alasan yang kuat.',
+   sample:{en:'Thank you so much for the offer. I am very excited about this opportunity. Based on my research and experience, I was hoping for a salary in the range of [X] to [Y]. Is there any flexibility on that? I believe my skills in [area] will add significant value to your team.',id:'Terima kasih banyak atas tawaran ini. Saya sangat antusias dengan kesempatan ini. Berdasarkan riset dan pengalaman saya, saya berharap gaji dalam kisaran [X] hingga [Y]. Apakah ada fleksibilitas? Saya yakin kemampuan saya di bidang [area] akan memberikan nilai yang signifikan bagi tim Anda.'}},
+  {ph:3,cat:'Kepemimpinan',q:'Describe your leadership or teamwork style.',tr:'Jelaskan gaya kepemimpinan atau kerja tim Anda.',tip:'Gunakan contoh spesifik. Tunjukkan bahwa Anda bisa bekerja baik sebagai pemimpin maupun anggota tim.',
+   sample:{en:'I believe in collaborative leadership. I prefer to listen to my team members first, then make decisions together. When I led a small project last year, I made sure everyone understood their role and felt comfortable sharing ideas. I also like to give credit to the team for successes.',id:'Saya percaya pada kepemimpinan kolaboratif. Saya lebih suka mendengarkan anggota tim terlebih dahulu, lalu membuat keputusan bersama. Ketika memimpin proyek kecil tahun lalu, saya memastikan semua orang memahami peran mereka dan merasa nyaman berbagi ide. Saya juga suka memberikan kredit kepada tim atas keberhasilan.'}},
+  {ph:3,cat:'Rencana Karir',q:'How do you plan to develop your skills in the next year?',tr:'Bagaimana Anda berencana mengembangkan kemampuan dalam setahun ke depan?',tip:'Sebutkan kursus, sertifikasi, atau kegiatan belajar yang spesifik dan relevan dengan industri.',
+   sample:{en:'In the next year, I plan to obtain a customer service certification online. I also want to improve my technical knowledge by taking courses in IT fundamentals. Additionally, I plan to practice my English daily through apps and conversation with native speakers. I believe continuous learning is key to career growth.',id:'Dalam setahun ke depan, saya berencana mendapatkan sertifikasi layanan pelanggan secara online. Saya juga ingin meningkatkan pengetahuan teknis dengan mengambil kursus dasar IT. Selain itu, saya berencana berlatih bahasa Inggris setiap hari melalui aplikasi dan percakapan dengan penutur asli. Saya percaya pembelajaran berkelanjutan adalah kunci pertumbuhan karir.'}},
+  {ph:3,cat:'Kerja',q:'How do you handle cultural differences in a multicultural workplace?',tr:'Bagaimana Anda menangani perbedaan budaya di tempat kerja multikultural?',tip:'Malaysia sangat multikultural (Melayu, Cina, India, Inggris). Tunjukkan kesadaran dan rasa hormat.',
+   sample:{en:'I think cultural diversity is a strength. I try to learn about my colleagues\' backgrounds and respect different communication styles. For example, some cultures prefer direct communication while others are more indirect. I adapt my style accordingly. In Malaysia\'s multicultural environment, I see this as a great opportunity to grow personally and professionally.',id:'Saya pikir keberagaman budaya adalah kekuatan. Saya mencoba mempelajari latar belakang rekan kerja dan menghormati gaya komunikasi yang berbeda. Misalnya, beberapa budaya lebih menyukai komunikasi langsung sementara yang lain lebih tidak langsung. Saya menyesuaikan gaya saya. Di lingkungan multikultural Malaysia, saya melihat ini sebagai kesempatan besar untuk berkembang secara pribadi dan profesional.'}},
+];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const SK = 'ecm_v2';
+let S = loadS();
+
+function loadS(){
+  try{
+    const d = JSON.parse(localStorage.getItem(SK)||'{}');
+    return {
+      streak: d.streak||0,
+      lastDate: d.lastDate||'',
+      vocabMastered: d.vocabMastered||[],
+      grammarBest: d.grammarBest||{},
+      convoDone: d.convoDone||[],
+      speakDone: d.speakDone||[],
+    };
+  }catch(e){return{streak:0,lastDate:'',vocabMastered:[],grammarBest:{},convoDone:[],speakDone:[]};}
+}
+function saveS(){ localStorage.setItem(SK, JSON.stringify(S)); }
+
+function recordStudy(){
+  const today = new Date().toDateString();
+  if(S.lastDate === today) return;
+  const yesterday = new Date(Date.now()-86400000).toDateString();
+  S.streak = (S.lastDate === yesterday) ? S.streak+1 : 1;
+  S.lastDate = today;
+  saveS();
+}
+
+function getPhase(){
+  const total = VOCAB.length + GRAMMAR.reduce((a,g)=>a+g.ex.length,0) + SCENARIOS.length;
+  const done = S.vocabMastered.length + Object.values(S.grammarBest).reduce((a,v)=>a+v,0) + S.convoDone.length;
+  const pct = total>0 ? done/total : 0;
+  return pct>=0.66 ? 3 : pct>=0.33 ? 2 : 1;
+}
+
+// ═══════════════════════════════════════════
+// TTS
+// ═══════════════════════════════════════════
+function speak(text, lang='en-US'){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang; u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+const screens = ['home','vocab','grammar','convo','speaking'];
+let curScreen = 'home';
+
+function goTo(name){
+  screens.forEach(s=>{
+    document.getElementById('s-'+s).classList.toggle('active',s===name);
+    const nb = document.getElementById('nav-'+s);
+    if(nb) nb.classList.toggle('active',s===name);
+  });
+  curScreen = name;
+  if(name==='home') renderHome();
+  else if(name==='vocab') renderVocabList();
+  else if(name==='grammar') renderGrammarList();
+  else if(name==='convo') renderConvoList();
+  else if(name==='speaking') renderSpeakList();
+}
+
+// ═══════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════
+function renderHome(){
+  recordStudy();
+  const hr = new Date().getHours();
+  const greet = hr<12?'Selamat Pagi ☀️':hr<17?'Selamat Siang 🌤️':'Selamat Malam 🌙';
+  const ph = getPhase();
+  const grammarDone = Object.values(S.grammarBest).filter(v=>v>0).length;
+  const today = new Date().toDateString();
+  const vocab5 = S.vocabMastered.length >= 5;
+  const gram1 = Object.values(S.grammarBest).some(v=>v>0);
+  const sc1 = S.convoDone.length > 0;
+
+  document.getElementById('home-content').innerHTML = `
+    <div class="greeting-card">
+      <div style="font-size:22px;font-weight:800;margin-bottom:4px">${greet}</div>
+      <div style="font-size:14px;opacity:.85">Fase ${ph} aktif • Tetap semangat belajar!</div>
+      <div class="streak-row">🔥 Streak ${S.streak} hari berturut-turut</div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-box">
+        <div class="stat-num">${S.vocabMastered.length}</div>
+        <div class="stat-lbl">Kata Dikuasai</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">${grammarDone}</div>
+        <div class="stat-lbl">Topik Grammar</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">${S.convoDone.length}</div>
+        <div class="stat-lbl">Skenario Selesai</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-weight:700;margin-bottom:10px;font-size:14px">🎯 Target Harian</div>
+      <div class="daily-row" style="margin-bottom:0">
+        <div class="daily-item ${vocab5?'done':''}">
+          <div class="daily-icon">${vocab5?'✅':'📚'}</div>
+          <div class="daily-text"><strong>5 Kata Vocab</strong><p>${S.vocabMastered.length} dikuasai total</p></div>
+        </div>
+        <div class="daily-item ${gram1?'done':''}">
+          <div class="daily-icon">${gram1?'✅':'📝'}</div>
+          <div class="daily-text"><strong>1 Topik Grammar</strong><p>${grammarDone} dari 6 topik selesai</p></div>
+        </div>
+        <div class="daily-item ${sc1?'done':''}">
+          <div class="daily-icon">${sc1?'✅':'💬'}</div>
+          <div class="daily-text"><strong>1 Skenario Percakapan</strong><p>${S.convoDone.length} dari 5 selesai</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:700;margin-bottom:10px;font-size:14px">📋 Kurikulum 3 Fase</div>
+      ${[1,2,3].map(p=>{
+        const labels = ['Dasar (Bulan 1-2)','Menengah (Bulan 3-4)','Lanjut (Bulan 5-6)'];
+        const descs = ['Vocab dasar, grammar sederhana, percakapan customer service','Modal verbs, email profesional, rapat tim','Negosiasi, kepemimpinan, karir internasional'];
+        const active = p===ph;
+        return `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:${p<3?'1px solid var(--bdr)':'none'}">
+          <div style="width:28px;height:28px;border-radius:8px;background:${active?'var(--p)':'var(--bdr)'};color:${active?'#fff':'var(--muted)'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${p}</div>
+          <div><div style="font-weight:600;font-size:13px;${active?'color:var(--p)':''}">${labels[p-1]}</div><div style="font-size:12px;color:var(--muted)">${descs[p-1]}</div></div>
+          ${active?'<span class="badge badge-p" style="margin-left:auto;flex-shrink:0">Aktif</span>':''}
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════
+// VOCAB
+// ═══════════════════════════════════════════
+let vMode = 'flash'; // flash | quiz
+let vFilter = 0; // 0=all, 1, 2, 3
+let vIdx = 0;
+let vFlipped = false;
+let quizWord = null; quizAnswered = false;
+let vPronState = {};
+
+function getVocabList(){
+  return vFilter===0 ? VOCAB : VOCAB.filter(v=>v.ph===vFilter);
+}
+
+function renderVocabList(){
+  document.getElementById('vocab-content').innerHTML = `
+    <div class="hdr"><h2>📚 Kosakata</h2></div>
+    <div class="mode-toggle">
+      <button class="mode-btn ${vMode==='flash'?'active':''}" onclick="setVMode('flash')">Flashcard</button>
+      <button class="mode-btn ${vMode==='quiz'?'active':''}" onclick="setVMode('quiz')">Kuis</button>
+    </div>
+    <div class="filter-row">
+      ${[0,1,2,3].map(f=>`<button class="filter-btn ${vFilter===f?'active':''}" onclick="setVFilter(${f})">${f===0?'Semua':'Fase '+f}</button>`).join('')}
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">
+      ${S.vocabMastered.length}/${VOCAB.length} kata dikuasai
+    </div>
+    <div class="prog-wrap" style="margin-bottom:16px"><div class="prog-bar" style="width:${Math.round(S.vocabMastered.length/VOCAB.length*100)}%"></div></div>
+    <div id="vocab-main"></div>
+  `;
+  renderVocabMain();
+}
+
+function setVMode(m){ vMode=m; vIdx=0; vFlipped=false; renderVocabList(); }
+function setVFilter(f){ vFilter=f; vIdx=0; vFlipped=false; renderVocabList(); }
+
+function renderVocabMain(){
+  const list = getVocabList();
+  if(!list.length){ document.getElementById('vocab-main').innerHTML='<p style="color:var(--muted);text-align:center">Tidak ada kata</p>'; return; }
+  if(vIdx>=list.length) vIdx=0;
+  const w = list[vIdx];
+  const mastered = S.vocabMastered.includes(w.id);
+  const st = vPronState[w.id] || {};
+  const sttAvail = ('SpeechRecognition' in window) || ('webkitSpeechRecognition' in window);
+
+  if(vMode==='flash'){
+    document.getElementById('vocab-main').innerHTML = `
+      <div class="flashcard ${vFlipped?'flipped':''}" onclick="flipCard()">
+        <div class="fc-front">
+          <div class="fc-word">${w.en}</div>
+          <div class="fc-ph">${w.pronunciation}</div>
+          <div style="margin-top:16px;font-size:12px;color:var(--muted)">Tap untuk lihat arti</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-meaning">${w.id_}</div>
+          <div class="fc-ex">"${w.ex}"</div>
+        </div>
+      </div>
+
+      ${mastered?`<div style="text-align:center;margin-bottom:10px"><span class="badge badge-ok">✅ Kata Ini Dikuasai</span></div>`:''}
+
+      ${!sttAvail?`
+        <div style="background:#FEF3C7;border-radius:12px;padding:12px;margin-bottom:14px;border-left:3px solid var(--warn)">
+          <p style="font-size:12px;color:#92400E">📢 Browser ini tidak mendukung pengenalan suara. Dengar (🔊) lalu ucapkan keras-keras secara manual untuk berlatih.</p>
+        </div>
+      `:''}
+
+      <div class="card" style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-weight:700;font-size:13px">🎤 Ucapkan kata: <span style="color:var(--p)">${w.en}</span></div>
+          <button onclick="speak('${w.en.replace(/'/g,"\\'")}')" style="background:none;border:none;cursor:pointer;font-size:16px">🔊</button>
+        </div>
+        ${sttAvail?`<button class="btn ${st.wordCorrect?'btn-secondary':'btn-primary'}" id="vmic-word" onclick="vStartRecording('word')" style="${st.wordCorrect?'border:1px solid var(--ok);color:var(--ok)':''}">
+          🎤 ${st.wordCorrect?'Benar! Ulangi lagi?':'Rekam Ucapanmu'}
+        </button>`:''}
+        ${st.wordTranscript?`<div style="margin-top:8px;font-size:12px;color:${st.wordCorrect?'var(--ok)':'var(--err)'}">${st.wordCorrect?'✅':'❌'} Terdengar: "${st.wordTranscript}"</div>`:''}
+      </div>
+
+      <div class="card" style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-weight:700;font-size:13px">🎤 Ucapkan kalimat</div>
+          <button onclick="speak('${w.ex.replace(/'/g,"\\'")}')" style="background:none;border:none;cursor:pointer;font-size:16px">🔊</button>
+        </div>
+        <div style="font-size:13px;font-style:italic;color:var(--muted);margin-bottom:8px">"${w.ex}"</div>
+        ${sttAvail?`<button class="btn ${st.sentCorrect?'btn-secondary':'btn-primary'}" id="vmic-sentence" onclick="vStartRecording('sentence')" style="${st.sentCorrect?'border:1px solid var(--ok);color:var(--ok)':''}">
+          🎤 ${st.sentCorrect?'Benar! Ulangi lagi?':'Rekam Ucapanmu'}
+        </button>`:''}
+        ${st.sentTranscript?`<div style="margin-top:8px;font-size:12px;color:${st.sentCorrect?'var(--ok)':'var(--err)'}">${st.sentCorrect?'✅':'❌'} Terdengar: "${st.sentTranscript}"</div>`:''}
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-secondary" onclick="navVocab(-1)" style="flex:1">← Sebelum</button>
+        <span style="align-self:center;font-size:13px;color:var(--muted);white-space:nowrap">${vIdx+1}/${list.length}</span>
+        <button class="btn btn-secondary" onclick="navVocab(1)" style="flex:1">Berikut →</button>
+      </div>
+    `;
+  } else {
+    // QUIZ MODE
+    if(!quizWord || quizWord.id !== w.id){ buildQuiz(w); }
+    renderQuiz(w);
+  }
+}
+
+function flipCard(){ vFlipped=!vFlipped; renderVocabMain(); }
+function navVocab(d){
+  const list=getVocabList();
+  vIdx=(vIdx+d+list.length)%list.length;
+  vFlipped=false;
+  quizWord=null; quizAnswered=false;
+  renderVocabMain();
+}
+
+function normalizeText(s){
+  return s.toLowerCase().replace(/[^a-z0-9\s']/g,'').replace(/\s+/g,' ').trim();
+}
+function levenshtein(a, b){
+  const m=a.length, n=b.length;
+  const dp=[];
+  for(let i=0;i<=m;i++){ dp.push(new Array(n+1).fill(0)); dp[i][0]=i; }
+  for(let j=0;j<=n;j++) dp[0][j]=j;
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+    }
+  }
+  return dp[m][n];
+}
+function wordMatch(expected, heard){
+  const e = normalizeText(expected), h = normalizeText(heard);
+  if(!h) return false;
+  if(h.includes(e) || e.includes(h)) return true;
+  const dist = levenshtein(e, h);
+  return dist <= Math.max(1, Math.floor(e.length * 0.3));
+}
+function sentenceMatch(expected, heard){
+  const e = normalizeText(expected).split(' ').filter(Boolean);
+  const h = new Set(normalizeText(heard).split(' ').filter(Boolean));
+  if(!h.size || !e.length) return false;
+  let matchCount = 0;
+  e.forEach(word=>{ if(h.has(word)) matchCount++; });
+  return matchCount / e.length >= 0.7;
+}
+
+function vStartRecording(target){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return;
+  const list = getVocabList();
+  const w = list[vIdx];
+  const wordId = w.id;
+  const btn = document.getElementById('vmic-'+target);
+  if(btn){ btn.disabled=true; btn.textContent='🔴 Mendengarkan...'; }
+  const rec = new SR();
+  rec.lang='en-US'; rec.interimResults=false; rec.maxAlternatives=1;
+  rec.onresult = e=>{
+    const transcript = e.results[0][0].transcript;
+    vHandlePronResult(wordId, target, transcript);
+  };
+  rec.onerror = ()=>{ renderVocabMain(); };
+  rec.start();
+}
+function vHandlePronResult(wordId, target, transcript){
+  const w = VOCAB.find(v=>v.id===wordId);
+  if(!vPronState[wordId]) vPronState[wordId] = {};
+  const st = vPronState[wordId];
+  if(target==='word'){
+    st.wordTranscript = transcript;
+    st.wordCorrect = wordMatch(w.en, transcript);
+  } else {
+    st.sentTranscript = transcript;
+    st.sentCorrect = sentenceMatch(w.ex, transcript);
+  }
+  if(st.wordCorrect && st.sentCorrect && !S.vocabMastered.includes(wordId)){
+    S.vocabMastered.push(wordId); saveS();
+  }
+  renderVocabMain();
+}
+
+function buildQuiz(w){
+  const list=VOCAB.filter(v=>v.id!==w.id);
+  const wrong=list.sort(()=>Math.random()-.5).slice(0,3).map(v=>v.id_);
+  const opts=[w.id_,...wrong].sort(()=>Math.random()-.5);
+  quizWord={id:w.id,correct:w.id_,opts};
+  quizAnswered=false;
+}
+
+function renderQuiz(w){
+  const el=document.getElementById('vocab-main');
+  const list=getVocabList();
+  el.innerHTML=`
+    <div class="card" style="margin-bottom:14px;text-align:center">
+      <div style="font-size:28px;font-weight:800;color:var(--p);margin-bottom:4px">${w.en}</div>
+      <div style="font-size:13px;color:var(--muted)">${w.pronunciation}</div>
+      <button onclick="speak('${w.en.replace(/'/g,"\\'")}') " style="margin-top:8px;background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px">🔊 Dengar</button>
+    </div>
+    <div id="quiz-opts">
+      ${quizWord.opts.map(o=>`<button class="quiz-opt" onclick="answerQuiz('${o.replace(/'/g,"\\'")}','${w.id_.replace(/'/g,"\\'")}',${w.id})">${o}</button>`).join('')}
+    </div>
+    <div style="text-align:center;font-size:13px;color:var(--muted);margin-top:8px">${vIdx+1}/${list.length}</div>
+  `;
+}
+
+function answerQuiz(chosen, correct, wid){
+  if(quizAnswered) return;
+  quizAnswered=true;
+  const btns=document.querySelectorAll('.quiz-opt');
+  btns.forEach(b=>{
+    if(b.textContent.trim()===correct) b.classList.add('correct');
+    else if(b.textContent.trim()===chosen && chosen!==correct) b.classList.add('wrong');
+    b.disabled=true;
+  });
+  if(chosen===correct && !S.vocabMastered.includes(wid)){
+    S.vocabMastered.push(wid); saveS();
+  }
+  setTimeout(()=>{ navVocab(1); }, 1800);
+}
+
+// ═══════════════════════════════════════════
+// GRAMMAR
+// ═══════════════════════════════════════════
+let gState = {view:'list', topicId:null, step:'expl', qIdx:0, score:0, answers:[]};
+
+function renderGrammarList(){
+  gState={view:'list',topicId:null,step:'expl',qIdx:0,score:0,answers:[]};
+  document.getElementById('grammar-content').innerHTML = `
+    <div class="hdr"><h2>📝 Grammar</h2></div>
+    ${GRAMMAR.map(t=>{
+      const best = S.grammarBest[t.id]||0;
+      const pct = Math.round(best/t.ex.length*100);
+      return `<div class="topic-item" onclick="openGrammar('${t.id}')">
+        <div class="topic-icon">${t.icon}</div>
+        <div class="topic-body">
+          <div class="topic-title">${t.title}</div>
+          <div class="topic-sub">${t.titleId} • ${t.ex.length} soal</div>
+          <div class="prog-wrap"><div class="prog-bar" style="width:${pct}%"></div></div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-left:8px">${pct}%</div>
+      </div>`;
+    }).join('')}
+  `;
+}
+
+function openGrammar(id){
+  gState={view:'topic',topicId:id,step:'expl',qIdx:0,score:0,answers:[]};
+  renderGrammarTopic();
+}
+
+function renderGrammarTopic(){
+  const t = GRAMMAR.find(g=>g.id===gState.topicId);
+  if(gState.step==='expl') renderGrammarExpl(t);
+  else if(gState.step==='quiz') renderGrammarQuiz(t);
+  else if(gState.step==='result') renderGrammarResult(t);
+}
+
+function renderGrammarExpl(t){
+  document.getElementById('grammar-content').innerHTML = `
+    <div class="hdr">
+      <button class="hdr-back" onclick="renderGrammarList()">←</button>
+      <h2>${t.icon} ${t.title}</h2>
+    </div>
+    <div class="expl-box">
+      <h3>Penjelasan</h3>
+      <p>${t.expl.replace(/\n/g,'<br>')}</p>
+    </div>
+    <div class="card">
+      <div style="font-weight:700;font-size:14px;margin-bottom:10px">Contoh Kalimat</div>
+      ${t.eg.map(e=>`
+        <div class="eg-item">
+          <div style="flex:1">
+            <div class="eg-en">${e.en}</div>
+            <div class="eg-id">${e.id}</div>
+          </div>
+          <button onclick="speak('${e.en.replace(/'/g,"\\'")}') " style="background:none;border:none;cursor:pointer;font-size:18px">🔊</button>
+        </div>
+      `).join('')}
+    </div>
+    <button class="btn btn-primary" onclick="startGrammarQuiz()">Mulai Latihan Soal →</button>
+  `;
+}
+
+function startGrammarQuiz(){
+  gState.step='quiz'; gState.qIdx=0; gState.score=0; gState.answers=[];
+  renderGrammarTopic();
+}
+
+function renderGrammarQuiz(t){
+  const q = t.ex[gState.qIdx];
+  const answered = gState.answers[gState.qIdx];
+  document.getElementById('grammar-content').innerHTML = `
+    <div class="hdr">
+      <button class="hdr-back" onclick="renderGrammarList()">←</button>
+      <h2>${t.title}</h2>
+    </div>
+    <div class="prog-wrap" style="margin-bottom:16px">
+      <div class="prog-bar" style="width:${Math.round(gState.qIdx/t.ex.length*100)}%"></div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Soal ${gState.qIdx+1} dari ${t.ex.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.opts.map((o,i)=>`
+        <button class="quiz-opt ${answered!==undefined?(i===q.ans?'correct':(i===answered&&answered!==q.ans?'wrong':'')):''}
+          " ${answered!==undefined?'disabled':''} onclick="answerGrammar(${i})">
+          ${o}
+        </button>
+      `).join('')}
+      ${answered!==undefined?`<div style="margin-top:8px;font-size:12px;color:var(--muted);padding:8px;background:#F8FAFC;border-radius:8px">💡 ${q.exp}</div>`:''}
+    </div>
+  `;
+}
+
+function answerGrammar(chosen){
+  if(gState.answers[gState.qIdx]!==undefined) return;
+  const t = GRAMMAR.find(g=>g.id===gState.topicId);
+  const q = t.ex[gState.qIdx];
+  gState.answers[gState.qIdx]=chosen;
+  if(chosen===q.ans) gState.score++;
+  renderGrammarQuiz(t);
+  setTimeout(()=>{
+    gState.qIdx++;
+    if(gState.qIdx>=t.ex.length){ gState.step='result'; }
+    renderGrammarTopic();
+  },1600);
+}
+
+function renderGrammarResult(t){
+  const pct = Math.round(gState.score/t.ex.length*100);
+  const prev = S.grammarBest[t.id]||0;
+  if(gState.score>prev){ S.grammarBest[t.id]=gState.score; saveS(); }
+  const color = pct>=80?'var(--ok)':pct>=50?'var(--warn)':'var(--err)';
+  const msg = pct>=80?'Luar biasa! 🎉':pct>=50?'Bagus! Terus berlatih 💪':'Coba lagi, kamu pasti bisa! 📚';
+  document.getElementById('grammar-content').innerHTML = `
+    <div class="hdr">
+      <button class="hdr-back" onclick="renderGrammarList()">←</button>
+      <h2>Hasil Latihan</h2>
+    </div>
+    <div class="completion">
+      <div class="score-circle" style="color:${color};border-color:${color}">${pct}%</div>
+      <h2>${gState.score}/${t.ex.length} Benar</h2>
+      <p>${msg}</p>
+      <button class="btn btn-primary" style="margin-bottom:10px" onclick="startGrammarQuiz()">🔄 Ulangi</button>
+      <button class="btn btn-secondary" onclick="renderGrammarList()">Pilih Topik Lain</button>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════
+// CONVERSATION SCENARIOS
+// ═══════════════════════════════════════════
+let cState = {view:'list', scId:null, step:0, history:[], revealed:false};
+
+function renderConvoList(){
+  cState={view:'list',scId:null,step:0,history:[],revealed:false};
+  document.getElementById('convo-content').innerHTML = `
+    <div class="hdr"><h2>💬 Percakapan</h2></div>
+    ${SCENARIOS.map(s=>{
+      const done = S.convoDone.includes(s.id);
+      return `<div class="scenario-item" onclick="openScenario('${s.id}')">
+        <div class="sc-emoji">${s.emoji}</div>
+        <div class="sc-body">
+          <div class="sc-title">${s.title} ${done?'✅':''}</div>
+          <div class="sc-desc">${s.desc}</div>
+          <span class="badge badge-p">Fase ${s.ph}</span>
+        </div>
+      </div>`;
+    }).join('')}
+  `;
+}
+
+function openScenario(id){
+  cState={view:'scenario',scId:id,step:0,history:[],revealed:false};
+  renderScenario();
+}
+
+function renderScenario(){
+  const sc = SCENARIOS.find(s=>s.id===cState.scId);
+  const step = sc.steps[cState.step];
+  const pct = Math.round(cState.step/sc.steps.length*100);
+
+  let historyHTML = cState.history.map(h=>`
+    <div class="bubble-container">
+      <div class="bubble them"><strong>${h.speaker}:</strong> ${h.en}</div>
+      <div class="bubble-tr">${h.id}</div>
+      ${h.answer?`<div class="bubble me">${h.answer}</div>`:''}
+      ${h.sample?`<div class="bubble me" style="opacity:.7;border:1px dashed rgba(255,255,255,.5)">💡 ${h.sample}</div>`:''}
+    </div>
+  `).join('');
+
+  document.getElementById('convo-content').innerHTML = `
+    <div class="hdr">
+      <button class="hdr-back" onclick="renderConvoList()">←</button>
+      <h2>${sc.emoji} ${sc.title}</h2>
+    </div>
+    <div class="prog-wrap" style="margin-bottom:16px"><div class="prog-bar" style="width:${pct}%"></div></div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Langkah ${cState.step+1} dari ${sc.steps.length}</div>
+
+    <div class="bubble-wrap">
+      ${historyHTML}
+      <div class="bubble-container">
+        <div class="bubble them"><strong>${step.speaker}:</strong> ${step.en}</div>
+        <div class="bubble-tr">${step.id}</div>
+      </div>
+    </div>
+
+    <div id="convo-action">
+      <textarea class="user-input" id="user-answer" placeholder="Tulis jawabanmu dalam bahasa Inggris..." rows="3"></textarea>
+      <div id="answer-reveal" class="answer-block" style="display:none">
+        <div style="font-size:12px;color:var(--ok);font-weight:700;margin-bottom:6px">💡 Contoh Jawaban Ideal:</div>
+        <div class="ans-en">${step.sample.en.replace(/\n/g,'<br>')}</div>
+        <div class="ans-id" style="margin-top:4px">${step.sample.id.replace(/\n/g,'<br>')}</div>
+        <button onclick="speak('${step.sample.en.replace(/'/g,"\\'").replace(/\n/g,' ')}')" style="margin-top:8px;background:none;border:1px solid var(--ok);border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--ok)">🔊 Dengar</button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary" onclick="revealAnswer()">💡 Lihat Contoh</button>
+        <button class="btn btn-primary" onclick="nextConvoStep()">Lanjut →</button>
+      </div>
+    </div>
+  `;
+}
+
+function revealAnswer(){
+  document.getElementById('answer-reveal').style.display='block';
+}
+
+function nextConvoStep(){
+  const sc = SCENARIOS.find(s=>s.id===cState.scId);
+  const step = sc.steps[cState.step];
+  const userAns = document.getElementById('user-answer').value.trim();
+  const revealed = document.getElementById('answer-reveal').style.display!=='none';
+  cState.history.push({
+    speaker:step.speaker,en:step.en,id:step.id,
+    answer:userAns||null,
+    sample:revealed?step.sample.en:null
+  });
+  cState.step++;
+  cState.revealed=false;
+  if(cState.step>=sc.steps.length){
+    if(!S.convoDone.includes(sc.id)){ S.convoDone.push(sc.id); saveS(); }
+    renderConvoComplete(sc);
+  } else {
+    renderScenario();
+  }
+}
+
+function renderConvoComplete(sc){
+  document.getElementById('convo-content').innerHTML = `
+    <div class="completion">
+      <div style="font-size:64px;margin-bottom:16px">🎉</div>
+      <h2>Skenario Selesai!</h2>
+      <p>${sc.title} telah berhasil kamu selesaikan. Terus berlatih untuk meningkatkan kemampuanmu!</p>
+      <button class="btn btn-primary" style="margin-bottom:10px" onclick="openScenario('${sc.id}')">🔄 Ulangi</button>
+      <button class="btn btn-secondary" onclick="renderConvoList()">Pilih Skenario Lain</button>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════
+// SPEAKING
+// ═══════════════════════════════════════════
+let spState = {view:'list', idx:0};
+let mediaRecorder = null, recognition = null, isRecording = false;
+
+function renderSpeakList(){
+  spState={view:'list',idx:0};
+  const userPh = getPhase();
+  document.getElementById('speak-content').innerHTML = `
+    <div class="hdr"><h2>🎤 Speaking</h2></div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Latihan berbicara bahasa Inggris dengan topik karir. Fase 2 & 3 terbuka seiring progress kamu.</p>
+    ${[1,2,3].map(p=>`
+      <div class="phase-label">Fase ${p}</div>
+      ${SPEAKING.filter(s=>s.ph===p).map((s,i)=>{
+        const globalIdx = SPEAKING.indexOf(s);
+        const locked = p > userPh;
+        const done = S.speakDone.includes(globalIdx);
+        return `<div class="speak-item ${locked?'locked':''}" onclick="${locked?'showLocked('+p+')':'openSpeak('+globalIdx+')'}">
+          <div style="font-size:24px">${done?'✅':locked?'🔒':'🎤'}</div>
+          <div style="flex:1">
+            <div class="speak-cat">${s.cat}</div>
+            <div class="speak-q">${s.q}</div>
+          </div>
+          <span class="badge badge-p">F${p}</span>
+        </div>`;
+      }).join('')}
+    `).join('')}
+  `;
+}
+
+function showLocked(ph){
+  alert(`Topik Fase ${ph} akan terbuka saat progress belajarmu mencapai Fase ${ph}. Terus semangat!`);
+}
+
+function openSpeak(idx){
+  spState={view:'topic',idx:idx};
+  renderSpeakTopic();
+}
+
+function renderSpeakTopic(){
+  const s = SPEAKING[spState.idx];
+  const sttAvail = ('SpeechRecognition' in window)||('webkitSpeechRecognition' in window);
+  const phList = SPEAKING.filter(sp=>sp.ph===s.ph);
+  const localIdx = phList.indexOf(s);
+
+  document.getElementById('speak-content').innerHTML = `
+    <div class="hdr">
+      <button class="hdr-back" onclick="stopRecording();renderSpeakList()">←</button>
+      <h2>🎤 Speaking</h2>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <span class="badge badge-p" style="margin-bottom:8px">Fase ${s.ph} • ${s.cat}</span>
+      <div style="font-size:16px;font-weight:700;margin-bottom:4px">${s.q}</div>
+      <div style="font-size:13px;color:var(--muted)">${s.tr}</div>
+    </div>
+    <div class="tip-box"><p>💡 <strong>Tips:</strong> ${s.tip}</p></div>
+
+    ${sttAvail?`
+      <div style="text-align:center;margin-bottom:16px">
+        <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">
+          <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+        </button>
+        <div style="margin-top:8px;font-size:13px;color:var(--muted)" id="rec-status">Tekan untuk mulai bicara</div>
+      </div>
+      <div class="transcript-box" id="transcript">Transkripsi suaramu akan muncul di sini...</div>
+    `:`
+      <div style="background:#FEF3C7;border-radius:12px;padding:14px;margin-bottom:14px;border-left:3px solid var(--warn)">
+        <p style="font-size:13px;color:#92400E;font-weight:600">📢 Cara latihan manual:</p>
+        <ol style="font-size:13px;color:#92400E;padding-left:18px;margin-top:6px;line-height:1.8">
+          <li>Baca pertanyaan di atas</li>
+          <li>Dengar contoh jawaban (tombol 🔊 di bawah)</li>
+          <li>Ucapkan contoh jawaban dengan keras 3x</li>
+          <li>Rekam dirimu dengan kamera HP dan dengarkan</li>
+        </ol>
+      </div>
+    `}
+
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-weight:700;font-size:14px;margin-bottom:8px">💡 Contoh Jawaban</div>
+      <div class="sample-box">
+        <div class="sample-en">${s.sample.en.replace(/\n/g,'<br>')}</div>
+        <div class="sample-id" style="margin-top:4px">${s.sample.id.replace(/\n/g,'<br>')}</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="speak('${s.sample.en.replace(/'/g,"\\'").replace(/\n/g,' ')}')">🔊 Dengar Contoh</button>
+    </div>
+
+    <button class="btn btn-primary" style="margin-bottom:10px" onclick="markSpeakDone(${spState.idx})">✅ Tandai Selesai</button>
+
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-secondary" onclick="navSpeak(-1)" style="flex:1" ${localIdx===0?'disabled':''}>← Sebelum</button>
+      <button class="btn btn-secondary" onclick="navSpeak(1)" style="flex:1" ${localIdx===phList.length-1?'disabled':''}>Berikut →</button>
+    </div>
+  `;
+}
+
+function markSpeakDone(idx){
+  if(!S.speakDone.includes(idx)){ S.speakDone.push(idx); saveS(); }
+  const btn = event.target;
+  btn.textContent='✅ Selesai!';
+  btn.style.background='var(--ok)';
+}
+
+function navSpeak(d){
+  stopRecording();
+  const s = SPEAKING[spState.idx];
+  const phList = SPEAKING.filter(sp=>sp.ph===s.ph);
+  const localIdx = phList.indexOf(s);
+  const newLocal = localIdx+d;
+  if(newLocal<0||newLocal>=phList.length) return;
+  spState.idx = SPEAKING.indexOf(phList[newLocal]);
+  renderSpeakTopic();
+}
+
+function toggleRecording(){
+  if(isRecording) stopRecording();
+  else startRecording();
+}
+
+function startRecording(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return;
+  recognition = new SR();
+  recognition.lang='en-US'; recognition.continuous=true; recognition.interimResults=true;
+  recognition.onresult = e=>{
+    let t='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      t+=e.results[i][0].transcript;
+    }
+    const box=document.getElementById('transcript');
+    if(box) box.textContent=t||'Mendengarkan...';
+  };
+  recognition.onerror=()=>stopRecording();
+  recognition.start();
+  isRecording=true;
+  const btn=document.getElementById('mic-btn');
+  if(btn) btn.classList.add('recording');
+  const st=document.getElementById('rec-status');
+  if(st) st.textContent='🔴 Sedang merekam... Tekan lagi untuk berhenti';
+}
+
+function stopRecording(){
+  if(recognition){ recognition.stop(); recognition=null; }
+  isRecording=false;
+  const btn=document.getElementById('mic-btn');
+  if(btn) btn.classList.remove('recording');
+  const st=document.getElementById('rec-status');
+  if(st) st.textContent='Tekan untuk mulai bicara';
+}
+
+// ═══════════════════════════════════════════
+// PWA INSTALL
+// ═══════════════════════════════════════════
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  if(!window.matchMedia('(display-mode: standalone)').matches){
+    document.getElementById('install-banner').style.display='flex';
+  }
+});
+document.getElementById('install-btn').addEventListener('click',()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(()=>{ document.getElementById('install-banner').style.display='none'; });
+});
+
+// ═══════════════════════════════════════════
+// SERVICE WORKER
+// ═══════════════════════════════════════════
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').then(reg=>reg.update());
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+    if(reloaded) return;
+    reloaded = true;
+    window.location.reload();
+  });
+}
+
+// INIT
+renderHome();
+</script>
+</body>
+</html>

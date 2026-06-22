@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5B54F0"/>
+      <stop offset="100%" stop-color="#2D27A3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Full background (fills all corners for maskable) -->
+  <rect width="512" height="512" fill="url(#bg)"/>
+
+  <!-- Soft glow top -->
+  <ellipse cx="256" cy="80" rx="200" ry="100" fill="rgba(255,255,255,0.07)"/>
+
+  <!-- Main chat bubble (white, centered) -->
+  <rect x="80" y="108" width="352" height="228" rx="52" fill="white"/>
+
+  <!-- Bubble tail bottom-left -->
+  <path d="M 112 336 C 112 336 88 396 72 420 C 100 404 164 368 184 336 Z" fill="white"/>
+
+  <!-- "EN" text inside bubble -->
+  <text
+    x="256" y="258"
+    font-family="'Arial Black','Helvetica Neue',Arial,sans-serif"
+    font-size="120" font-weight="900"
+    fill="#3730A3"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    letter-spacing="-2">EN</text>
+
+  <!-- Underline accent -->
+  <rect x="156" y="288" width="200" height="10" rx="5" fill="#4F46E5" opacity="0.35"/>
+</svg>
