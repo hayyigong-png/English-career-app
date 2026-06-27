@@ -123,6 +123,25 @@ textarea.user-input:focus{border-color:var(--p)}
 .speak-q{font-size:14px;font-weight:600}
 .tip-box{background:#FEF3C7;border-radius:12px;padding:12px;margin-bottom:14px;border-left:3px solid var(--warn)}
 .tip-box p{font-size:13px;line-height:1.5;color:#92400E}
+.kt-part{background:var(--card);border-radius:16px;margin-bottom:12px;border:1px solid var(--bdr);overflow:hidden}
+.kt-part-head{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;user-select:none}
+.kt-part-num{width:34px;height:34px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.kt-part-title{flex:1;font-weight:700;font-size:14px}
+.kt-part-sub{font-size:11px;color:var(--muted);font-weight:400;margin-top:1px}
+.kt-part-arrow{font-size:13px;color:var(--muted);transition:transform .2s}
+.kt-part.open .kt-part-arrow{transform:rotate(180deg)}
+.kt-part-body{padding:0 14px 14px}
+.kt-box{border-radius:14px;padding:14px;margin-bottom:10px}
+.kt-box-title{font-weight:700;font-size:13px;margin-bottom:8px;letter-spacing:.2px}
+.kt-formula{background:rgba(255,255,255,.6);border-radius:10px;padding:10px;font-size:12px;font-family:ui-monospace,Menlo,monospace;white-space:pre-line;line-height:1.6;margin-top:6px}
+.kt-rule{margin-bottom:8px}
+.kt-rule:last-child{margin-bottom:0}
+.kt-rule-label{font-weight:700;font-size:12.5px}
+.kt-rule-desc{font-size:12.5px;line-height:1.5}
+.kt-rule-ex{font-size:12px;font-style:italic;opacity:.85;margin-top:2px}
+.kt-kw-label{font-size:11px;font-weight:700;margin:10px 0 6px;opacity:.75;text-transform:uppercase;letter-spacing:.4px}
+.kt-kw-wrap{display:flex;flex-wrap:wrap;gap:6px}
+.kt-chip{background:rgba(255,255,255,.7);border-radius:20px;padding:4px 10px;font-size:11.5px;font-weight:600}
 .mic-btn{width:80px;height:80px;border-radius:50%;background:var(--p);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 4px 20px rgba(79,70,229,.35);transition:all .2s}
 .mic-btn.recording{animation:pulse 1.2s infinite;background:var(--err)}
 .mic-btn svg{width:36px;height:36px;color:#fff;fill:#fff}
@@ -364,6 +383,113 @@ const GRAMMAR = [
       {q:'I ___ understand the error message.',opts:['don\'t','doesn\'t','didn\'t','can\'t'],ans:0,exp:'I + don\'t untuk present negatif'},
     ]
   },
+];
+
+// ═══════════════════════════════════════════
+// KATA KUNCI TENSES (referensi cepat)
+// ═══════════════════════════════════════════
+const KEYTENSE = [
+  { part:1, boxes:[
+    { title:'Simple Present', rules:[
+        { desc:'Untuk kebiasaan, fakta umum, atau sesuatu yang terjadi secara rutin.' }
+      ], formula:'(+) S + V1(s/es) + O\n(-) S + do/does + not + V1 + O\n(?) Do/Does + S + V1 + O?',
+      keywords:['every day','usually','often','sometimes','always','never','once a week/month/year'] },
+    { title:'Present Continuous', rules:[
+        { desc:'Untuk tindakan yang sedang terjadi sekarang atau sementara berlangsung.' }
+      ], formula:'(+) S + am/is/are + V-ing + O\n(-) S + am/is/are + not + V-ing + O\n(?) Am/Is/Are + S + V-ing + O?',
+      keywords:['now','right now','at the moment','at this time','look!','listen!'] },
+  ], tip:['Simple Present = kebiasaan atau fakta','Present Continuous = sedang terjadi sekarang'] },
+
+  { part:2, boxes:[
+    { title:'Simple Past', rules:[
+        { desc:'Untuk kejadian yang sudah selesai di masa lalu.' }
+      ], formula:'(+) S + V2/did + O\n(-) S + did not + V1 + O\n(?) Did + S + V1 + O?',
+      keywords:['yesterday','last night','last week','last month','ago','in 2019','when I was young','a moment ago'] },
+    { title:'Present Perfect', rules:[
+        { desc:'Untuk kejadian yang terjadi di masa lalu tapi masih ada hubungannya dengan sekarang.' }
+      ], formula:'(+) S + have/has + V3 + O\n(-) S + have/has + not + V3 + O\n(?) Have/Has + S + V3 + O?',
+      keywords:['already','yet','ever','never','just','so far','up to now','recently','since','for'] },
+  ], tip:['Simple Past = sudah selesai di masa lalu','Present Perfect = masih ada kaitannya dengan sekarang'] },
+
+  { part:3, boxes:[
+    { title:'Present Perfect vs Present Perfect Continuous', rules:[
+        { label:'Present Perfect', desc:'fokus pada HASIL.', example:'I have finished my homework. (hasilnya sudah selesai)' },
+        { label:'Present Perfect Continuous', desc:'fokus pada PROSES yang masih berlangsung.', example:'I have been doing my homework. (prosesnya masih berlangsung)' },
+      ], keywords:['for','since','already','yet','just','ever','never','so far','up to now','recently','lately'] },
+    { title:'Past Simple vs Past Continuous', rules:[
+        { label:'Past Simple', desc:'kejadian singkat (selesai) di masa lalu.', example:'I watched a movie yesterday.' },
+        { label:'Past Continuous', desc:'kejadian yang sedang berlangsung di masa lalu.', example:'I was watching a movie at 8 p.m. yesterday.' },
+      ], keywords:['yesterday','last night','last week','ago','in 2018','when I was ...','while I was ...','as'] },
+    { title:'Future Will vs Be Going To', rules:[
+        { label:'Will', desc:'keputusan spontan, janji, prediksi tanpa bukti.', example:'I will call you later.' },
+        { label:'Be going to', desc:'rencana, prediksi berdasarkan bukti.', example:'It is going to rain.' },
+      ], keywords:['tomorrow','next week/month/year','soon','in the future','later','this weekend'] },
+  ], tip:['Pelajari kata kunci = setengah jalan mahir tenses!','Kenali pola waktu = pilih tense jadi lebih mudah!'] },
+
+  { part:4, boxes:[
+    { title:'Present Simple vs Present Perfect', rules:[
+        { label:'Present Simple', desc:'kebiasaan, fakta umum.', example:'I go to school every day.' },
+        { label:'Present Perfect', desc:'pengalaman atau hasilnya masih terasa sekarang.', example:'I have been to Bali.' },
+      ], keywords:['every day','usually','often','sometimes','seldom','always','never','in general','as a rule'] },
+    { title:'Will vs Be Going To', rules:[
+        { label:'Will', desc:'keputusan spontan, janji, tawaran.', example:'I will help you.' },
+        { label:'Be going to', desc:'rencana, niat, prediksi berdasarkan bukti.', example:'I am going to study tonight.' },
+      ], keywords:['I think / I hope','maybe','probably','I promise','I will ...','plan to','intend to','be sure to','look like/seems'] },
+    { title:'Used To vs Would', rules:[
+        { label:'Used to', desc:'kebiasaan di masa lalu yang sudah tidak dilakukan lagi.', example:'I used to play guitar.' },
+        { label:'Would', desc:'kebiasaan, perilaku, atau preferensi di masa lalu.', example:"I would go to my grandma's house." },
+      ], keywords:['used to','back then','in the past','when I was young','always (in the past)','every day (in the past)','I liked to','I preferred to','in those days'] },
+  ], tip:['Perhatikan KATA KUNCI biar gak salah pilih tense!','Semakin sering latihan, makin paham pola waktunya!'] },
+
+  { part:5, boxes:[
+    { title:'Can vs Could', rules:[
+        { label:'Can', desc:'kemampuan atau izin di masa kini.', example:'I can swim.' },
+        { label:'Could', desc:'kemampuan atau izin di masa lalu / lebih sopan.', example:'I could swim when I was 10.' },
+      ], keywords:['now','right now','today','at the moment','usually','yesterday','when I was ...','in the past','if I were you (lebih sopan)'] },
+    { title:'Must vs Have To', rules:[
+        { label:'Must', desc:'keharusan pribadi / peraturan dari diri sendiri.', example:'I must study hard.' },
+        { label:'Have to', desc:'keharusan karena aturan dari luar / orang lain.', example:'I have to wear a uniform.' },
+      ], keywords:['I think ...','I believe ...',"it's important ...",'by myself','I must ...','the rules say ...','my teacher told me ...','we have to ...',"it's required ..."] },
+    { title:'May vs Might', rules:[
+        { label:'May', desc:'kemungkinan besar, izin (formal).', example:'It may rain tomorrow.' },
+        { label:'Might', desc:'kemungkinan kecil / tidak pasti.', example:'He might be late.' },
+      ], keywords:['probably','maybe',"it's possible (possible)",'perhaps','I think so','probably not',"I'm not sure","it's unlikely",'just a possibility'] },
+  ], tip:['KATA KUNCI bukan 100% aturan, tapi membantu kamu memilih tense yang paling tepat.','Semakin sering latihan, makin cepat kamu terbiasa!'] },
+
+  { part:6, boxes:[
+    { title:'Was/Were vs Did', rules:[
+        { label:'Was/Were', desc:'keadaan atau situasi di masa lalu.', example:'I was tired yesterday.' },
+        { label:'Did', desc:'aksi atau kegiatan di masa lalu.', example:'I did my homework last night.' },
+      ], keywords:['yesterday','last night','last week','ago','in 2010','when I was ...','while I was ...','at that time'] },
+    { title:'Some vs Any', rules:[
+        { label:'Some', desc:'untuk kalimat positif atau menawarkan sesuatu.', example:'I have some money.' },
+        { label:'Any', desc:'untuk kalimat negatif atau bertanya.', example:'Do you have any questions?' },
+      ], keywords:['some + countable (jamak)','some + uncountable (tak terhitung)','any + countable (jamak)','any + uncountable (tak terhitung)','any dalam tanya','any dalam negatif'] },
+    { title:'Too vs To', rules:[
+        { label:'Too', desc:'berarti "terlalu" (biasanya di akhir kalimat).', example:'It is too hot today.' },
+        { label:'To', desc:'artinya "untuk" (diikuti kata kerja dasar).', example:'I want to learn English.' },
+      ], keywords:['too + adj/adv','too much','too many','too late / too early','to + verb (infinitive)','to go','to eat','to study'] },
+  ] },
+
+  { part:7, boxes:[
+    { title:'Which/Who vs That', rules:[
+        { label:'Which/Who', desc:'untuk pilihan spesifik atau informasi tambahan.', example:'This is the book which I bought.' },
+        { label:'That', desc:'untuk informasi penting atau pembatas (defining).', example:'This is the book that I bought.' },
+      ], keywords:['which (informasi tambahan)','who (orang, subjek)','that (informasi penting)','the one which ...','the person who ...','the thing that ...','all that ...'] },
+    { title:'As ... As vs So ... That', rules:[
+        { label:'As ... as', desc:'perbandingan setara (sama seperti).', example:'She is as tall as her sister.' },
+        { label:'So ... that', desc:'akibat / hasil (sangat ... sehingga).', example:'It was so cold that I stayed home.' },
+      ], keywords:['as ... as','not as/so ... as','the same as','so ... that','such ... that','too ... to (terlalu ... untuk)','enough ... to (cukup ... untuk)'] },
+    { title:'Because vs Because Of', rules:[
+        { label:'Because', desc:'diikuti klausa (subjek + verb).', example:'I stayed home because it was raining.' },
+        { label:'Because of', desc:'diikuti noun / pronoun.', example:'I stayed home because of the rain.' },
+      ], keywords:['because (alasan - klausa)','because of (alasan - noun)','thanks to (berkat)','due to (karena, formal)','as (karena sebab)'] },
+    { title:'If Clauses (Kondisional)', rules:[
+        { label:'If Type 1', desc:'mungkin terjadi.', example:'If it rains, I will stay home.' },
+        { label:'If Type 2', desc:'tidak mungkin / hipotetis.', example:'If I won the lottery, I would travel the world.' },
+        { label:'If Type 3', desc:'masa lalu - penyesalan.', example:'If I had studied harder, I would have passed the exam.' },
+      ], keywords:['if (jika)','unless (kecuali jika)','as long as (selama)','in case (kalau-kalau)','on condition that (dengan syarat)','provided that (asalkan)','even if (meskipun)'] },
+  ], tip:['Kuasai KATA KUNCI = kuasai 80% penggunaan tenses!','Hafal pola + banyak latihan = otomatis jago!'] },
 ];
 
 const SCENARIOS = [
@@ -818,11 +944,24 @@ function answerQuiz(chosen, correct, wid){
 // GRAMMAR
 // ═══════════════════════════════════════════
 let gState = {view:'list', topicId:null, step:'expl', qIdx:0, score:0, answers:[]};
+let gMode = 'topic';
+let ktOpenPart = 1;
+const KT_PALETTE = [
+  {bg:'#EEF2FF',fg:'#4F46E5'}, {bg:'#FCE7F3',fg:'#BE185D'}, {bg:'#DBEAFE',fg:'#1D4ED8'},
+  {bg:'#D1FAE5',fg:'#065F46'}, {bg:'#FEF3C7',fg:'#92400E'}, {bg:'#F3E8FF',fg:'#7C3AED'},
+];
+
+function setGMode(m){ gMode=m; if(m==='topic') renderGrammarList(); else renderKeyTenses(); }
 
 function renderGrammarList(){
   gState={view:'list',topicId:null,step:'expl',qIdx:0,score:0,answers:[]};
+  gMode='topic';
   document.getElementById('grammar-content').innerHTML = `
     <div class="hdr"><h2>📝 Grammar</h2></div>
+    <div class="mode-toggle">
+      <button class="mode-btn ${gMode==='topic'?'active':''}" onclick="setGMode('topic')">Topik</button>
+      <button class="mode-btn ${gMode==='keywords'?'active':''}" onclick="setGMode('keywords')">📌 Kata Kunci</button>
+    </div>
     ${GRAMMAR.map(t=>{
       const best = S.grammarBest[t.id]||0;
       const pct = Math.round(best/t.ex.length*100);
@@ -834,6 +973,49 @@ function renderGrammarList(){
           <div class="prog-wrap"><div class="prog-bar" style="width:${pct}%"></div></div>
         </div>
         <div style="font-size:12px;color:var(--muted);margin-left:8px">${pct}%</div>
+      </div>`;
+    }).join('')}
+  `;
+}
+
+function toggleKtPart(part){
+  ktOpenPart = (ktOpenPart===part) ? null : part;
+  renderKeyTenses();
+}
+
+function renderKeyTenses(){
+  gMode='keywords';
+  document.getElementById('grammar-content').innerHTML = `
+    <div class="hdr"><h2>📌 Kata Kunci Tenses</h2></div>
+    <div class="mode-toggle">
+      <button class="mode-btn ${gMode==='topic'?'active':''}" onclick="setGMode('topic')">Topik</button>
+      <button class="mode-btn ${gMode==='keywords'?'active':''}" onclick="setGMode('keywords')">📌 Kata Kunci</button>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Cuat-cepat: kenali kata kuncinya, langsung tahu tense-nya! Ketuk tiap bagian untuk membuka.</div>
+    ${KEYTENSE.map(part=>{
+      const open = ktOpenPart===part.part;
+      return `<div class="kt-part ${open?'open':''}">
+        <div class="kt-part-head" onclick="toggleKtPart(${part.part})">
+          <div class="kt-part-num">${part.part}</div>
+          <div class="kt-part-title">Part ${part.part}<div class="kt-part-sub">${part.boxes.map(b=>b.title).join(' • ')}</div></div>
+          <div class="kt-part-arrow">▼</div>
+        </div>
+        ${open ? `<div class="kt-part-body">
+          ${part.boxes.map((b,i)=>{
+            const c = KT_PALETTE[i%KT_PALETTE.length];
+            return `<div class="kt-box" style="background:${c.bg};color:${c.fg}">
+              <div class="kt-box-title">${b.title.toUpperCase()}</div>
+              ${b.rules.map(r=>`<div class="kt-rule">
+                ${r.label?`<span class="kt-rule-label">${r.label} → </span>`:''}<span class="kt-rule-desc">${r.desc}</span>
+                ${r.example?`<div class="kt-rule-ex">"${r.example}"</div>`:''}
+              </div>`).join('')}
+              ${b.formula?`<div class="kt-formula">${b.formula.replace(/\n/g,'<br>')}</div>`:''}
+              <div class="kt-kw-label">🔑 Kata Kunci</div>
+              <div class="kt-kw-wrap">${b.keywords.map(k=>`<span class="kt-chip">${k}</span>`).join('')}</div>
+            </div>`;
+          }).join('')}
+          ${part.tip?`<div class="tip-box"><p>💡 <strong>Ingat!</strong><br>${part.tip.join('<br>')}</p></div>`:''}
+        </div>` : ''}
       </div>`;
     }).join('')}
   `;
