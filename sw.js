@@ -1,4 +1,4 @@
-const CACHE = 'english-career-v7';
+const CACHE = 'english-career-v8';
 const ASSETS = ['./', './index.html', './manifest.json', './sw.js', './icon.svg', './icon-maskable.svg', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
